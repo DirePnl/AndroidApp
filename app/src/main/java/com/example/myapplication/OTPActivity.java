@@ -82,7 +82,7 @@ public class OTPActivity extends AppCompatActivity {
         OTP.generateAndStoreOtp(userEmail, firestore, new OTP.OnOtpGenerated() {
             @Override
             public void onGenerated(String otp) {
-                Toast.makeText(OTPActivity.this, "OTP Resent: " + otp, Toast.LENGTH_SHORT).show(); // Testing only
+                Toast.makeText(OTPActivity.this, "OTP Resent: ", Toast.LENGTH_SHORT).show(); // Testing only
             }
 
             @Override
