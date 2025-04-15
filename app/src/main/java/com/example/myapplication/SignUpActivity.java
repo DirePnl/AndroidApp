@@ -8,27 +8,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
-
-
     private FirebaseAuth authent;
     private EditText signupEmail, signupPassword;
     private Button signupButton;
     private TextView loginRedirectText;
-
-
+    private FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +30,8 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_activity);
 
         authent = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+
         signupEmail = findViewById(R.id.signup_email);
         signupPassword = findViewById(R.id.signup_password);
         signupButton = findViewById(R.id.signup_button);
@@ -47,24 +43,34 @@ public class SignUpActivity extends AppCompatActivity {
                 String user = signupEmail.getText().toString().trim();
                 String password = signupPassword.getText().toString().trim();
 
-                if(user.isEmpty()){
+                if (user.isEmpty()) {
                     signupEmail.setError("Enter Email");
+                    return;
                 }
-                if(password.isEmpty()){
-                   signupPassword.setError("Enter Password");
-                }else{
-                    authent.createUserWithEmailAndPassword(user, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
-                                Toast.makeText(SignUpActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                            }else{
-                                Toast.makeText(SignUpActivity.this, "Sign Up Failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+
+                if (password.isEmpty()) {
+                    signupPassword.setError("Enter Password");
+                    return;
                 }
+
+                // Send OTP first, without creating user
+                OTP.generateAndStoreOtp(user, firestore, new OTP.OnOtpGenerated() {
+                    @Override
+                    public void onGenerated(String otp) {
+                        // Pass email and password to OTPActivity for verification
+                        Intent otpIntent = new Intent(SignUpActivity.this, OTPActivity.class);
+                        otpIntent.putExtra("email", user);
+                        otpIntent.putExtra("password", password);
+                        Toast.makeText(SignUpActivity.this, "OTP sent to your email.", Toast.LENGTH_SHORT).show();
+                        startActivity(otpIntent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        Toast.makeText(SignUpActivity.this, "Failed to generate OTP: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 

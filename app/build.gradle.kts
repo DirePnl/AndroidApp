@@ -33,13 +33,21 @@ android {
 }
 
 dependencies {
+    // Add Firebase BOM to manage dependency versions
+    implementation(platform("com.google.firebase:firebase-bom:31.2.0"))  // Corrected syntax
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
-    implementation(libs.firebase.auth)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    // Firebase libraries will be automatically assigned compatible versions
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    // implementation("com.google.firebase:firebase-common") // Only if needed explicitly
+    implementation("com.google.android.material:material:1.6.0")
+    // Other dependencies
+    implementation("androidx.appcompat:appcompat:1.3.1")  // Update this with actual version if needed
+    implementation("com.google.android.material:material:1.4.0")  // Same for this
+    implementation("androidx.activity:activity-ktx:1.2.4")  // Same for this
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")  // Same for this
+
+    testImplementation("junit:junit:4.13.2")  // Corrected format for testImplementation
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")  // Corrected format
+    androidTestImplementation("androidx.espresso:espresso-core:3.4.0")  // Corrected format
 }
