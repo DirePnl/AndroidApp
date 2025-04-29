@@ -1,24 +1,35 @@
 package com.example.myapplication;
 
-import android.os.Bundle;
+import android.annotation.SuppressLint;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.Timestamp;
 
-public class OTP extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_otp);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+public class OTP {
+
+    public static void generateAndStoreOtp(String email, FirebaseFirestore firestore, OnOtpGenerated listener) {
+        @SuppressLint("DefaultLocale") String otp = String.format("%06d", new Random().nextInt(999999));
+
+        Map<String, Object> otpData = new HashMap<>();
+        otpData.put("otp", otp);
+        otpData.put("timestamp", Timestamp.now());
+
+        firestore.collection("email_otps")
+                .document(email)
+                .set(otpData)
+                .addOnSuccessListener(unused -> {
+                    // TODO: Send email via backend or function
+                    listener.onGenerated(otp); // For testing only
+                })
+                .addOnFailureListener(e -> listener.onFailed(e.getMessage()));
+    }
+
+    public interface OnOtpGenerated {
+        void onGenerated(String otp);  // Just to see OTP in debug or Toast for now
+        void onFailed(String error);
     }
 }
