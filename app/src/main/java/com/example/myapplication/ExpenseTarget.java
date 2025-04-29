@@ -25,12 +25,6 @@ import java.util.Locale;
 public class ExpenseTarget extends AppCompatDialogFragment {
     //for datepicker
     private EditText startDateEditText, endDateEditText;
-    //for enterbudget
-    Button enterbudget;
-
-
-
-
 
 
     @NonNull
