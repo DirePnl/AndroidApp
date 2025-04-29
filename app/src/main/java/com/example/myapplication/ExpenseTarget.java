@@ -55,14 +55,11 @@ public class ExpenseTarget extends AppCompatDialogFragment {
             endDateEditText.setText(sdf.format(new Date(endMillis)));
         });
 
-
-        View view2 = LayoutInflater.from(getActivity()).inflate(R.layout.activity_main, null);
-
         targetButton.setOnClickListener(v -> {
             EditText targetBudget = view.findViewById(R.id.targetBudget);
             String budgetTF = targetBudget.getText().toString();
-            EditText startDate = view.findViewById(R.id.editTextStartDate);
-            String hasStart = startDate.getText().toString();
+
+            String hasStart = startDateEditText.getText().toString();
 
 
             if (budgetTF.isEmpty() || hasStart.isEmpty() ){
