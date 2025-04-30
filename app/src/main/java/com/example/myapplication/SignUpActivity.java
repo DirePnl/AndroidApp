@@ -35,13 +35,13 @@ public class SignUpActivity extends AppCompatActivity {
             } else if (password.isEmpty()) {
                 signupPassword.setError("Enter Password");
             } else {
-                // ✅ Generate OTP and send it before account creation
+
                 OTP.generateAndStoreOtp(user, firestore, new OTP.OnOtpGenerated() {
                     @Override
                     public void onGenerated(String otp) {
-                        EmailSender.sendEmail(user, otp); // 📧 send OTP to email
+                        EmailSender.sendEmail(user, otp);
 
-                        // ✅ Navigate to OTPActivity with the data
+
                         Intent intent = new Intent(SignUpActivity.this, OTPActivity.class);
                         intent.putExtra("email", user);
                         intent.putExtra("password", password);
