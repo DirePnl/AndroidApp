@@ -22,14 +22,13 @@ public class OTP {
                 .document(email)
                 .set(otpData)
                 .addOnSuccessListener(unused -> {
-                    // TODO: Send email via backend or function
-                    listener.onGenerated(otp); // For testing only
+                    listener.onGenerated(otp);
                 })
                 .addOnFailureListener(e -> listener.onFailed(e.getMessage()));
     }
 
     public interface OnOtpGenerated {
-        void onGenerated(String otp);  // Just to see OTP in debug or Toast for now
+        void onGenerated(String otp);
         void onFailed(String error);
     }
 }
