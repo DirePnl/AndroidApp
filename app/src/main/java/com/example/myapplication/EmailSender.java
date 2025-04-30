@@ -17,10 +17,10 @@ public class EmailSender {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                final String fromEmail = "franzizleo21@gmail.com"; // Your Gmail address
-                final String password = "mssi upja nwgj ojeh "; // Your App Password
+                final String fromEmail = "franzizleo21@gmail.com";
+                final String password = "mssi upja nwgj ojeh ";
 
-                // Set up the properties for Gmail SMTP
+                //Gmail SMTP
                 Properties properties = new Properties();
                 properties.put("mail.smtp.host", "smtp.gmail.com");
                 properties.put("mail.smtp.port", "465"); // Port for SSL
@@ -28,7 +28,7 @@ public class EmailSender {
                 properties.put("mail.smtp.socketFactory.port", "465"); // SSL Port
                 properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-                // Create a session with your email and password
+                // Create session
                 Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(fromEmail, password);
@@ -36,14 +36,14 @@ public class EmailSender {
                 });
 
                 try {
-                    // Create the email message
+                    //email message
                     Message message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(fromEmail));
                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
                     message.setSubject("Your OTP Code");
                     message.setText("Your OTP code is: " + otp);
 
-                    // Send the email
+                    //Send
                     Transport.send(message);
                     Log.d("EmailSender", "OTP Email sent successfully!");
                 } catch (Exception e) {

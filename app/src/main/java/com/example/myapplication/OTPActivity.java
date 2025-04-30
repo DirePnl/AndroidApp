@@ -18,7 +18,7 @@ public class OTPActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
     private String userEmail;
-    private String userPassword; // add password
+    private String userPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,6 @@ public class OTPActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-        // Get email and password from intent
         userEmail = getIntent().getStringExtra("email");
         userPassword = getIntent().getStringExtra("password");
 
@@ -56,7 +55,6 @@ public class OTPActivity extends AppCompatActivity {
                         if (enteredOtp.equals(savedOtp)) {
                             Toast.makeText(this, "OTP Verified!", Toast.LENGTH_SHORT).show();
 
-                            // ✅ Create user after OTP verification
                             auth.createUserWithEmailAndPassword(userEmail, userPassword)
                                     .addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
