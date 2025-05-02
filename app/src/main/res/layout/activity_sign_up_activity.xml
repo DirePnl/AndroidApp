@@ -59,7 +59,8 @@
                 android:hint="Email"
                 android:drawableLeft="@drawable/baseline_person_24"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black">
+                android:textColor="?android:textColorPrimary"
+                android:textColorHint="?android:textColorHint">
             </EditText>
 
             <EditText
@@ -72,7 +73,8 @@
                 android:hint="Password"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black">
+                android:textColor="?android:textColorPrimary"
+                android:textColorHint="?android:textColorHint">
             </EditText>
             
             <Button

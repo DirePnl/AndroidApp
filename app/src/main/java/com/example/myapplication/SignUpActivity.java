@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private EditText signupEmail, signupPassword;
+    private TextView loginRedirectText;
     private Button signupButton;
 
     @Override
@@ -25,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
         signupEmail = findViewById(R.id.signup_email);
         signupPassword = findViewById(R.id.signup_password);
         signupButton = findViewById(R.id.signup_button);
+        loginRedirectText = findViewById(R.id.loginRedirectText);
 
         signupButton.setOnClickListener(v -> {
             String user = signupEmail.getText().toString().trim();
@@ -56,5 +60,13 @@ public class SignUpActivity extends AppCompatActivity {
                 });
             }
         });
+        loginRedirectText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+            }
+        });
+
+
     }
 }
