@@ -59,9 +59,10 @@
                 android:layout_marginTop="40dp"
                 android:padding="8dp"
                 android:hint="Email"
+                android:textColor="?android:textColorPrimary"
+                android:textColorHint="?android:textColorHint"
                 android:drawableLeft="@drawable/baseline_person_24"
-                android:drawablePadding="8dp"
-                android:textColor="@color/black">
+                android:drawablePadding="8dp">
             </EditText>
 
             <EditText
@@ -72,9 +73,10 @@
                 android:layout_marginTop="40dp"
                 android:padding="8dp"
                 android:hint="Password"
+                android:textColor="?android:textColorPrimary"
+                android:textColorHint="?android:textColorHint"
                 android:drawableLeft="@drawable/baseline_lock_24"
-                android:drawablePadding="8dp"
-                android:textColor="@color/black">
+                android:drawablePadding="8dp">
             </EditText>
 
             <Button
@@ -87,17 +89,37 @@
                 android:backgroundTint="@color/green"
                 app:cornerRadius = "20dp"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/signupRedirectText"
-                android:text="Don't have an account? Sign Up!"
-                android:layout_gravity="center"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/green"
-                android:textSize="15sp"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/signupRedirectText"
+                    android:text="Sign Up"
+                    android:layout_gravity="start"
+                    android:padding="8dp"
+
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/green"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/forgotPasswordText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="10dp"
+                    android:padding="8dp"
+                    android:text="Forgot Password"
+                    android:textColor="@color/green"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
 
 

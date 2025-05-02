@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -80,6 +81,8 @@ public class OTPActivity extends AppCompatActivity {
         OTP.generateAndStoreOtp(userEmail, firestore, new OTP.OnOtpGenerated() {
             @Override
             public void onGenerated(String otp) {
+                Log.d("OTP", "Generated OTP: " + otp);
+                EmailSender.sendEmail(userEmail, otp);
                 Toast.makeText(OTPActivity.this, "OTP Resent: ", Toast.LENGTH_SHORT).show(); // Testing only
             }
 

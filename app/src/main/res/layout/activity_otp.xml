@@ -43,7 +43,7 @@
                 android:text="Enter the OTP sent to your email"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:layout_marginBottom="20dp"/>
 
             <EditText
@@ -54,7 +54,8 @@
                 android:hint="Enter OTP"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
+                android:textColorHint="?android:textColorHint"
                 android:textSize="18sp"
                 android:background="@drawable/custom_edittext"
                 android:layout_marginBottom="30dp"/>
