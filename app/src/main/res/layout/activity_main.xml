@@ -85,7 +85,6 @@
             android:layout_gravity="center"
             android:layout_marginTop="70dp"
             android:backgroundTint="@color/black"
-
             />
 
     </FrameLayout>
