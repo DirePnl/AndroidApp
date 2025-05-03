@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -10,12 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,26 +27,23 @@ public class LoginActivity extends AppCompatActivity {
     private TextView signupRedirectText;
     private Button loginButton;
 
+    private TextView forgotPasswordText;
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
-
 
         authenticate = FirebaseAuth.getInstance();
         loginEmail = findViewById(R.id.login_email);
         loginPassword = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.login_button);
         signupRedirectText = findViewById(R.id.signupRedirectText);
+        forgotPasswordText = findViewById(R.id.forgotPasswordText);
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                         loginPassword.setError("Enter Password");
                     }
                 }else if (email.isEmpty()){
-                    loginEmail.setError("Email does not exist");
-                } else {
                     loginEmail.setError("Enter Email");
+                } else {
+                    loginEmail.setError("Email does not exist");
 
                 }
             }
@@ -84,6 +84,42 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                    }
+                });
+
+                forgotPasswordText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String email = loginEmail.getText().toString().trim();
+
+                        if (email.isEmpty()) {
+                            Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            Toast.makeText(LoginActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                                .addOnCompleteListener(task -> {
+                                    Exception e = task.getException();
+                                    if (task.isSuccessful() || e instanceof FirebaseAuthInvalidUserException) {
+                                        new AlertDialog.Builder(LoginActivity.this)
+                                                .setMessage("Account does not exist if email is not sent within 5-10 minutes")
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                    }
+                                                })
+                                                .setCancelable(false) // Optional, to make the dialog non-dismissable by tapping outside
+                                                .show();
+                                        Toast.makeText(LoginActivity.this, "Request Sent", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "Failed to send reset email", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
                 });
     }

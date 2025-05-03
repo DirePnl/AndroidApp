@@ -1,23 +1,16 @@
 package com.example.myapplication;
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.util.Pair;
-
 import com.google.android.material.datepicker.MaterialDatePicker;
-
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,6 +18,7 @@ import java.util.Locale;
 public class ExpenseTarget extends AppCompatDialogFragment {
     //for datepicker
     private EditText startDateEditText, endDateEditText;
+    public String budgetTF;
 
 
     @NonNull
@@ -57,7 +51,7 @@ public class ExpenseTarget extends AppCompatDialogFragment {
 
         targetButton.setOnClickListener(v -> {
             EditText targetBudget = view.findViewById(R.id.targetBudget);
-            String budgetTF = targetBudget.getText().toString();
+            budgetTF = targetBudget.getText().toString();
 
             String hasStart = startDateEditText.getText().toString();
 
@@ -67,6 +61,7 @@ public class ExpenseTarget extends AppCompatDialogFragment {
             }else {
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).updateBudgetText(budgetTF);
+                    ((MainActivity) getActivity()).updateMaxBudget(Integer.parseInt(budgetTF));
                 }
                 dismiss();
             }
