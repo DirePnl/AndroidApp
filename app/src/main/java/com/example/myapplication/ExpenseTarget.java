@@ -1,6 +1,7 @@
 package com.example.myapplication;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,9 +18,9 @@ import java.util.Locale;
 
 public class ExpenseTarget extends AppCompatDialogFragment {
     //for datepicker
-    private EditText startDateEditText, endDateEditText;
+    UserData target;
+    public EditText startDateEditText, endDateEditText;
     public String budgetTF;
-
 
     @NonNull
     @Override
@@ -50,38 +51,42 @@ public class ExpenseTarget extends AppCompatDialogFragment {
         });
 
         targetButton.setOnClickListener(v -> {
-            EditText targetBudget = view.findViewById(R.id.targetBudget);
-            budgetTF = targetBudget.getText().toString();
+            try {
+                EditText targetBudget = view.findViewById(R.id.targetBudget);
+                budgetTF = targetBudget.getText().toString();
 
-            String hasStart = startDateEditText.getText().toString();
+                String start = startDateEditText.getText().toString();
+                String end = endDateEditText.getText().toString();
 
+                // Check if inputs are valid
+                if (budgetTF.isEmpty() || start.isEmpty() || end.isEmpty()) {
+                    Toast.makeText(getContext(), "Fill all parameters", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Create a UserData object
+                    target = new UserData(budgetTF, start, end, "");
 
-            if (budgetTF.isEmpty() || hasStart.isEmpty() ){
-                Toast.makeText(getContext(), "Fill all parameters", Toast.LENGTH_SHORT).show();
-            }else {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).updateBudgetText(budgetTF);
-                    ((MainActivity) getActivity()).updateMaxBudget(Integer.parseInt(budgetTF));
+                    // Save to Firebase
+                    FirebaseManager manager = new FirebaseManager(getContext());
+                    manager.saveBudgetTarget(target);
+
+                    // Update MainActivity (if needed)
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).updateBudgetText(budgetTF);
+                        ((MainActivity) getActivity()).updateMaxBudget(Integer.parseInt(budgetTF));
+                    }
+
+                    dismiss();
                 }
-                dismiss();
+            } catch (Exception e) {
+                Log.e("ExpenseTarget", "Error saving budget target: " + e.getMessage(), e);
+                Toast.makeText(getContext(), "An error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
         });
 
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(view);
         dialog.setTitle("Set Target Budget");
         return dialog;
-
     }
-
-
-
-
-
-
-
-
-
-
 }
+
