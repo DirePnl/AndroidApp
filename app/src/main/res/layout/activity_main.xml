@@ -50,13 +50,11 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:indeterminateOnly="false"
-            android:progress="2500"
-            android:max="2500"
             android:progressDrawable="@drawable/circle"
             android:rotation="180"
             android:layout_gravity="center"
-            android:layout_marginBottom="90dp"
-            tools:progress="2500"/>
+            android:layout_marginBottom="90dp"/>
+
 
         <TextView
             android:id="@+id/expenseinput"
