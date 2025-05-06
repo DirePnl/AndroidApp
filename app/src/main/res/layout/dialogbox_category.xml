@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="320dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        android:background="@drawable/custom_edittext"
-        android:backgroundTint="@color/lightgreen"
-        android:elevation="6dp"
-        android:orientation="vertical"
-        android:padding="20dp"
-        tools:layout_editor_absoluteX="45dp"
-        tools:layout_editor_absoluteY="215dp">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="320dp"
+    android:layout_height="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:background="@drawable/custom_edittext"
+    android:backgroundTint="@color/lightgreen"
+    android:elevation="6dp"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:layout_editor_absoluteX="45dp"
+    tools:layout_editor_absoluteY="215dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -39,7 +37,7 @@
                 android:id="@+id/btnAdd"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="5"
                 android:layout_column="0"
                 android:fontFamily="@font/spendlymain"
@@ -55,7 +53,7 @@
                 android:id="@+id/btnUtilities"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="3"
                 android:layout_column="2"
                 android:fontFamily="@font/spendlymain"
@@ -67,7 +65,7 @@
                 android:id="@+id/btnSavings"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="3"
                 android:layout_column="3"
                 android:fontFamily="@font/spendlymain"
@@ -79,7 +77,7 @@
                 android:id="@+id/btnFood"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="1"
                 android:layout_column="2"
                 android:fontFamily="@font/spendlymain"
@@ -91,7 +89,7 @@
                 android:id="@+id/btnShopping"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="1"
                 android:layout_column="0"
                 android:fontFamily="@font/spendlymain"
@@ -104,7 +102,7 @@
                 android:id="@+id/btnGrocery"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="3"
                 android:layout_column="0"
                 android:fontFamily="@font/spendlymain"
@@ -116,7 +114,7 @@
                 android:id="@+id/btnTranspo"
                 style="@style/Widget.MaterialComponents.TimePicker.Button"
                 android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_row="1"
                 android:layout_column="3"
                 android:fontFamily="@font/spendlymain"
@@ -144,14 +142,14 @@
 
             <Button
                 android:id="@+id/button3"
+                tools:visibility="invisible"
                 android:layout_width="80dp"
                 android:layout_height="5dp"
                 android:layout_row="4"
                 android:layout_column="3"
                 android:text="Button"
-                tools:visibility="invisible" />
+                android:visibility="invisible" />
         </GridLayout>
 
 
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
