@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/black"
         android:textColor="@color/white"
-        android:text="Target Budget"
+        android:text="Enter"
         android:layout_marginTop="24dp"/>
 
 

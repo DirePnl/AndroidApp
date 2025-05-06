@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.gms.google.services) // ✅ Applies google-services plugin
 }
 
 android {
@@ -35,17 +35,23 @@ android {
     packaging {
         resources {
             excludes += "META-INF/NOTICE.md"
-            excludes += "META-INF/LICENSE.md" // Optional, just in case
+            excludes += "META-INF/LICENSE.md"
         }
     }
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:31.2.0"))
+    // Firebase BoM (Bill of Materials)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation ("com.google.firebase:firebase-firestore:24.0.0")
+
+
+    // Firebase libraries
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database") // ✅ Realtime Database
 
-    // JavaMail dependencies
+    // JavaMail (if used)
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
 
