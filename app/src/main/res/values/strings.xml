@@ -2,5 +2,8 @@
     <string name="MyApplication">My Application</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="button_description">View Category Summary</string>
+    <string name="info_button_description">View Profile Information</string>
+    <string name="edit_button_description">Edit User Information</string>
+    <string name="done_button_description">Done Editing User Information</string>
 </resources>
