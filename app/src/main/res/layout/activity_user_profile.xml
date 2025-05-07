@@ -50,7 +50,7 @@
         app:layout_constraintVertical_bias="0.011" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/infoBtn"
         android:layout_width="66dp"
         android:layout_height="49dp"
         android:layout_marginStart="200dp"

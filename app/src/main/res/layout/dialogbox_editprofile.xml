@@ -24,17 +24,17 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="382dp"
-                android:layout_height="300dp"
+                android:layout_height="491dp"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="204dp"
+                android:layout_marginTop="116dp"
                 android:background="@drawable/layer_bg"
                 android:elevation="@dimen/cardview_compat_inset_shadow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
-                    android:layout_width="380dp"
-                    android:layout_height="298dp"
+                    android:layout_width="384dp"
+                    android:layout_height="487dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="1dp"
@@ -46,16 +46,17 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="372dp"
                         android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView12"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="42dp"
-                            android:text="Username"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="68dp"
+                            android:text="Username:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,9 +64,10 @@
                             android:id="@+id/textView13"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="76dp"
-                            android:text="Password"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="124dp"
+                            android:text="Password:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,9 +75,10 @@
                             android:id="@+id/textView14"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="112dp"
-                            android:text="First Name"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="183dp"
+                            android:text="First Name:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -83,9 +86,10 @@
                             android:id="@+id/textView15"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="148dp"
-                            android:text="Last Name"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="244dp"
+                            android:text="Last Name:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,9 +97,10 @@
                             android:id="@+id/textView16"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="184dp"
-                            android:text="Email"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="292dp"
+                            android:text="Email:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -103,9 +108,10 @@
                             android:id="@+id/textView17"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="220dp"
-                            android:text="Contact Number"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="356dp"
+                            android:text="Contact Number:"
+                            android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,8 +119,8 @@
                             android:id="@+id/textView18"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="260dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="424dp"
                             android:text="Date of Birth"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -123,15 +129,115 @@
                             android:id="@+id/imageButton2"
                             android:layout_width="61dp"
                             android:layout_height="52dp"
-                            android:layout_marginStart="328dp"
-                            android:layout_marginBottom="256dp"
+                            android:layout_marginStart="320dp"
+                            android:layout_marginBottom="440dp"
                             android:background="@android:color/transparent"
                             android:contentDescription="@string/done_button_description"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:srcCompat="@drawable/baseline_done_24" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="267dp"
+                            android:layout_height="58dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginBottom="380dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/textView12">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="username" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="267dp"
+                            android:layout_height="58dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginBottom="324dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/textView13">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="password" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="266dp"
+                            android:layout_height="55dp"
+                            android:layout_marginStart="104dp"
+                            android:layout_marginBottom="268dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="e.g. John" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="266dp"
+                            android:layout_height="53dp"
+                            android:layout_marginStart="104dp"
+                            android:layout_marginBottom="213dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="e.g. Dela Cruz" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="266dp"
+                            android:layout_height="53dp"
+                            android:layout_marginStart="104dp"
+                            android:layout_marginBottom="155dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="name@email.com" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="232dp"
+                            android:layout_height="61dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginBottom="1dp"
+                            app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+                            app:layout_constraintStart_toEndOf="@+id/textView17">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:hint="+63" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textInputLayout"
+                            android:layout_width="264dp"
+                            android:layout_height="69dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/textView18">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="dd/mm/yyyy" />
+                        </com.google.android.material.textfield.TextInputLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
