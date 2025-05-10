@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity2 extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView rvCategories;
     private CategoryAdapter categoryAdapter;
@@ -26,7 +26,7 @@ public class MainActivity2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_2);
+        setContentView(R.layout.menu_activity);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu); // Set menu as selected initially
@@ -61,6 +61,11 @@ public class MainActivity2 extends AppCompatActivity {
                 showAddCategoryDialog();
             }
         });
+
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item ->
+                BottomNavigation.handleNavigation(MenuActivity.this, item.getItemId()));
     }
 
     private void showAddCategoryDialog() {

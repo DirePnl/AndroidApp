@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item>
-        <shape
-            android:layout_height="wrap_content"
-            android:shape="rectangle">
-            <solid android:color="@color/white" /> <!-- Button color -->
+        <shape android:shape="rectangle">
+             <!-- Hardcoded white -->
             <corners android:radius="11dp" />
         </shape>
     </item>

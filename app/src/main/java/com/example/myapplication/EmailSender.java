@@ -1,7 +1,11 @@
 package com.example.myapplication;
 
-import android.os.AsyncTask;
+import android.util.Log;
+
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -9,18 +13,19 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import android.util.Log;
-
 public class EmailSender {
 
     public static void sendEmail(final String toEmail, final String otp) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                final String fromEmail = "franzizleo21@gmail.com";
-                final String password = "mssi upja nwgj ojeh ";
+        // Create an ExecutorService with a single background thread
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-                //Gmail SMTP
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                final String fromEmail = "franzizleo21@gmail.com";
+                final String password = "mssi upja nwgj ojeh "; // Replace with your actual password
+
+                // Gmail SMTP
                 Properties properties = new Properties();
                 properties.put("mail.smtp.host", "smtp.gmail.com");
                 properties.put("mail.smtp.port", "465"); // Port for SSL
@@ -36,22 +41,23 @@ public class EmailSender {
                 });
 
                 try {
-                    //email message
+                    // Email message
                     Message message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(fromEmail));
                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
                     message.setSubject("Your OTP Code");
                     message.setText("Your OTP code is: " + otp);
 
-                    //Send
+                    // Send email
                     Transport.send(message);
                     Log.d("EmailSender", "OTP Email sent successfully!");
                 } catch (Exception e) {
                     Log.e("EmailSender", "Failed to send OTP email: " + e.getMessage());
                     e.printStackTrace();
                 }
-                return null;
             }
-        }.execute();
+        });
+
+        executorService.shutdown(); // Shut down the executor
     }
 }

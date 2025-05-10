@@ -11,10 +11,13 @@
         android:id="@+id/tvCategoryName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/tvLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
+
 </LinearLayout>
