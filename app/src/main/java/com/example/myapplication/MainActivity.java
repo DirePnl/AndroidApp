@@ -3,11 +3,13 @@ package com.example.myapplication;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,7 +56,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Call the method to fetch data when the activity starts
         loadBudgetData();
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item ->
+                BottomNavigation.handleNavigation(MainActivity.this, item.getItemId()));
+
     }
+
+
+
+
+
+
 
     @Override
     protected void onStart() {
@@ -99,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+    //Update Methods for the data
     public void updateDateText(String start, String end){
         dateTextView.setText(start + " - " + end);
     }
