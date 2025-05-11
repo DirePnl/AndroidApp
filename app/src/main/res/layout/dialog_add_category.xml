@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:background="@color/Ultralightgreen"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etCategoryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/category_name"
+        android:textColorHint="@color/gray"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:background="@drawable/edit_text_border"
+        android:padding="8dp"/>
+
+    <EditText
+        android:id="@+id/etLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label"
+        android:inputType="text"
+        android:textColorHint="@color/gray"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:background="@drawable/edit_text_border"
+        android:padding="8dp"/>
+    <Button
+        android:id="@+id/btnAddCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_category"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

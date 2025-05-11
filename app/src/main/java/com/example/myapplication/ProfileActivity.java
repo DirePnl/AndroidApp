@@ -7,6 +7,8 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class ProfileActivity extends AppCompatActivity {
 
     @Override
@@ -19,14 +21,14 @@ public class ProfileActivity extends AppCompatActivity {
         viewUserInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                infoActivity();
+                startActivity(new Intent(ProfileActivity.this, UserInfoActivity.class));
             }
         });
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item ->
+                BottomNavigation.handleNavigation(ProfileActivity.this, item.getItemId()));
     }
 
-    private void infoActivity() {
-        // Start the InfoActivity
-        Intent intent = new Intent(this, UserInfoActivity.class);
-        startActivity(intent);
-    }
+
 }
