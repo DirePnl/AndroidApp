@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,12 +64,25 @@ public class MenuActivity extends AppCompatActivity {
         fabAddCategory.setOnClickListener(view -> showAddCategoryDialog());
 
 
-        if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BottomNavigationFragment bottomNavigationFragment = new BottomNavigationFragment();
-            transaction.replace(R.id.fragment_container, bottomNavigationFragment);
-            transaction.commit();
-        }
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu) {
+                // Already on the home page, no action needed
+                return true;
+            } else if (itemId == R.id.home) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                return true; // Indicate that the item selection was handled
+            }else if (itemId == R.id.profile) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                return true; // Indicate that the item selection was handled
+            }
+            return false; // Indicate that the item selection was not handled
+        });
 
     }
 

@@ -26,12 +26,25 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BottomNavigationFragment bottomNavigationFragment = new BottomNavigationFragment();
-            transaction.replace(R.id.fragment_container, bottomNavigationFragment);
-            transaction.commit();
-        }
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            int itemId = item.getItemId();
+            if (itemId == R.id.profile) {
+                // Already on the home page, no action needed
+                return true;
+            } else if (itemId == R.id.menu) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), MenuActivity.class));
+                return true; // Indicate that the item selection was handled
+            }else if (itemId == R.id.home) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                return true; // Indicate that the item selection was handled
+            }
+            return false; // Indicate that the item selection was not handled
+        });
 
     }
 
