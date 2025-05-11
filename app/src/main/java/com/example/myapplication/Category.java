@@ -4,6 +4,9 @@ public class Category {
     private String categoryName;
     private String label;
 
+    // Required no-arg constructor for Firestore
+    public Category() {}
+
     public Category(String categoryName, String label) {
         this.categoryName = categoryName;
         this.label = label;
