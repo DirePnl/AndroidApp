@@ -8,17 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +27,7 @@ public class MenuActivity extends AppCompatActivity {
     private List<Category> categories = new ArrayList<>();
     private FloatingActionButton fabAddCategory;
     private FirebaseManager firebaseManager;
+    private Button delButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +60,8 @@ public class MenuActivity extends AppCompatActivity {
 
         // Floating Action Button to add a new category
         fabAddCategory.setOnClickListener(view -> showAddCategoryDialog());
+
+
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -139,6 +139,12 @@ public class MenuActivity extends AppCompatActivity {
             });
         });
 
+
+
         dialog.show();
     }
+
+
+
+
 }

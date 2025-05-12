@@ -23,6 +23,11 @@ public class FirebaseManager {
         this.context = context;
     }
 
+
+
+
+
+
     // Save or update fixed budget target document
     public void saveBudgetTarget(UserData target) {
         FirebaseUser user = auth.getCurrentUser();
@@ -46,8 +51,17 @@ public class FirebaseManager {
                 });
     }
 
-    // Save a new category (adds a new document)
-    // Modified saveCategory method with a callback to notify after saving
+
+
+
+
+
+
+
+
+
+
+
     public void saveCategory(Category category, FirebaseManager.CategoryDataCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
@@ -94,9 +108,8 @@ public class FirebaseManager {
                     for (DocumentSnapshot doc : snapshot.getDocuments()) {
                         Category category = doc.toObject(Category.class);
                         if (category != null) {
+                            category.setId(doc.getId());  // Set the id of the category
                             categories.add(category);
-                        } else {
-                            Log.w("FirebaseManager", "Null category document found.");
                         }
                     }
                     callback.onCategoriesLoaded(categories);
@@ -105,7 +118,55 @@ public class FirebaseManager {
                     Log.e("FirebaseManager", "Error loading categories: " + e.getMessage());
                     callback.onError(e);
                 });
+
     }
+
+    public void deleteCategory(String categoryId, CategoryDataCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            callback.onError(new Exception("User not authenticated"));
+            return;
+        }
+
+        db.collection("users")
+                .document(user.getUid())
+                .collection("categories")
+                .document(categoryId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseManager", "Category deleted successfully with ID: " + categoryId);
+                    loadCategories(callback); // Reload categories after deletion
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Failed to delete category with ID: " + categoryId, e);
+                    callback.onError(e);
+                });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Sign in anonymously if needed
     public interface AuthCallback {
