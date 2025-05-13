@@ -46,7 +46,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/logout_button"
+                    android:id="@+id/proceed_delete_button"
                     android:layout_width="104dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="260dp"
@@ -58,7 +58,7 @@
                     tools:ignore="VisualLintButtonSize" />
 
                 <Button
-                    android:id="@+id/logout_button2"
+                    android:id="@+id/cancel_delete_button"
                     android:layout_width="104dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="148dp"

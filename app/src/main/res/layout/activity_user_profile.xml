@@ -164,6 +164,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Centered last button -->
+
     <Button
         android:id="@+id/category_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
@@ -176,9 +177,10 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/category_button3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.036"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/category_button3" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
