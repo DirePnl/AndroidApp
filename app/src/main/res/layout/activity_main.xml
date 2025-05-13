@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,17 +7,17 @@
     android:background="@drawable/bg"
     tools:context=".MainActivity">
 
-
-
+    <!-- Main content area -->
     <FrameLayout
         android:id="@+id/progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Title TextView -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,9 +28,9 @@
             android:textAlignment="center"
             android:layout_marginBottom="10dp"
             android:textStyle="bold"
-            android:textColor="@color/black">
-        </TextView>
+            android:textColor="@color/black"/>
 
+        <!-- Date TextView -->
         <TextView
             android:id="@+id/dateTextView"
             android:layout_width="wrap_content"
@@ -43,7 +42,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"/>
 
-
+        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progress_circular"
             style="?android:attr/progressBarStyleLarge"
@@ -55,22 +54,19 @@
             android:layout_gravity="center"
             android:layout_marginBottom="90dp"/>
 
-
+        <!-- Expense Input Text -->
         <TextView
             android:id="@+id/expenseinput"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginBottom="175dp"
-            android:indeterminateOnly="false"
             android:text="0 Php"
-            android:max="500"
-            android:progress="0"
-            tools:progress="60"
             android:textColor="@android:color/black"
             android:textSize="25sp"
             android:textStyle="bold"/>
 
+        <!-- Add Expense Button -->
         <Button
             android:id="@+id/addExpense"
             style="@style/Widget.Material3.Button.ElevatedButton"
@@ -82,12 +78,9 @@
             android:textStyle="bold"
             android:layout_gravity="center"
             android:layout_marginTop="70dp"
-            android:backgroundTint="@color/black"
-            />
+            android:backgroundTint="@color/black"/>
 
     </FrameLayout>
-
-
 
     <LinearLayout
         android:id="@+id/linear_layout_bottom"

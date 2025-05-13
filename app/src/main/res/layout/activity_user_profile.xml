@@ -182,17 +182,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/category_button3" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
+    <LinearLayout
+        android:id="@+id/linear_layout_bottom"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@color/beige"
-        app:menu="@menu/bottom_navigation_menu"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/beige"
+            app:menu="@menu/bottom_navigation_menu" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

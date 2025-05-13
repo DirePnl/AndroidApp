@@ -1,18 +1,22 @@
 package com.example.myapplication;
 
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseUser;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,50 +26,81 @@ public class MenuActivity extends AppCompatActivity {
     private CategoryAdapter categoryAdapter;
     private List<Category> categories = new ArrayList<>();
     private FloatingActionButton fabAddCategory;
+    private FirebaseManager firebaseManager;
+    private Button delButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.menu); // Set menu as selected initially
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.home) {
-                // Navigate to MainActivity (Home page)
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                // You might want to finish the current activity if you don't want to go back to it
-                // finish();
-                return true; // Indicate that the item selection was handled
-            } else if (itemId == R.id.menu) {
-                // Already on the menu page, no action needed
-                return true;
-            }
-            return false; // Indicate that the item selection was not handled
-        });
-
-
-
-
         rvCategories = findViewById(R.id.rvCategories);
+        fabAddCategory = findViewById(R.id.fabAddCategory);
+
         categoryAdapter = new CategoryAdapter(categories);
         rvCategories.setAdapter(categoryAdapter);
         rvCategories.setLayoutManager(new LinearLayoutManager(this));
 
-        fabAddCategory = findViewById(R.id.fabAddCategory);
-        fabAddCategory.setOnClickListener(new View.OnClickListener() {
+        firebaseManager = new FirebaseManager(this);
+
+        // Using the sign-in method from FirebaseManager
+        firebaseManager.signInAnonymouslyIfNeeded(new FirebaseManager.AuthCallback() {
             @Override
-            public void onClick(View view) {
-                showAddCategoryDialog();
+            public void onSuccess(FirebaseUser user) {
+                // Load categories once signed in
+                loadCategories();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(MenuActivity.this, "Authentication failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("MenuActivity", "Anonymous sign-in failed", e);
             }
         });
 
+        // Floating Action Button to add a new category
+        fabAddCategory.setOnClickListener(view -> showAddCategoryDialog());
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnItemSelectedListener(item ->
-                BottomNavigation.handleNavigation(MenuActivity.this, item.getItemId()));
+
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+
+        bottomNavigationView.setOnItemSelectedListener(item ->{
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu) {
+                // Already on the home page, no action needed
+                return true;
+            } else if (itemId == R.id.home) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                return true; // Indicate that the item selection was handled
+            }else if (itemId == R.id.profile) {
+                // Navigate to MainActivity2 (Menu page)
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                return true; // Indicate that the item selection was handled
+            }
+            return false; // Indicate that the item selection was not handled
+        });
+
+    }
+
+    private void loadCategories() {
+        firebaseManager.loadCategories(new FirebaseManager.CategoryDataCallback() {
+            @Override
+            public void onCategoriesLoaded(List<Category> loadedCategories) {
+                categories.clear();
+                categories.addAll(loadedCategories);
+                categoryAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(MenuActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                Log.e("MenuActivity", "Error loading categories", e);
+            }
+        });
     }
 
     private void showAddCategoryDialog() {
@@ -80,20 +115,36 @@ public class MenuActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
 
-        btnAddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String categoryName = etCategoryName.getText().toString();
-                String label = etLabel.getText().toString();
+        btnAddCategory.setOnClickListener(view -> {
+            String categoryName = etCategoryName.getText().toString();
+            String label = etLabel.getText().toString();
 
-                Category newCategory = new Category(categoryName, label);
+            // Create a new Category object
+            Category newCategory = new Category(categoryName, label);
 
-                categoryAdapter.addCategory(newCategory);
+            // Save the category to Firestore
+            firebaseManager.saveCategory(newCategory, new FirebaseManager.CategoryDataCallback() {
+                @Override
+                public void onCategoriesLoaded(List<Category> categories) {
+                    // After saving, reload the categories
+                    loadCategories();
+                    dialog.dismiss();
+                }
 
-                dialog.dismiss();
-            }
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(MenuActivity.this, "Failed to add category", Toast.LENGTH_SHORT).show();
+                    Log.e("MenuActivity", "Error adding category", e);
+                }
+            });
         });
+
+
+
         dialog.show();
     }
-}
 
+
+
+
+}
