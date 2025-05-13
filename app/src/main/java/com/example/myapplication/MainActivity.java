@@ -1,14 +1,13 @@
 package com.example.myapplication;
 
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
@@ -19,9 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar budgetProgBar;
-    private FirebaseFirestore db;
-    private TextView expenseInputTextView, dateTextView;
-    private FirebaseManager firebaseManager;
+    private FirebaseFirestore db; // Firestore instance
+    private FirebaseAuth mAuth; // FirebaseAuth for getting the current user
+    private TextView expenseInputTextView, dateTextView; // Reference for the expense input TextView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,55 +28,46 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
 
-        firebaseManager = new FirebaseManager(this);
-
         budgetProgBar = findViewById(R.id.progress_circular);
         expenseInputTextView = findViewById(R.id.expenseinput);
-        dateTextView = findViewById(R.id.dateTextView);
+        dateTextView = findViewById(R.id.dateTextView);// Initialize the TextView
 
-        db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance(); // Initialize Firestore
+        mAuth = FirebaseAuth.getInstance(); // Initialize FirebaseAuth
 
-        firebaseManager.signInAnonymouslyIfNeeded(new FirebaseManager.AuthCallback() {
-            @Override
-            public void onSuccess(FirebaseUser user) {
-                Log.d("AuthCheck", "Signed in as: " + user.getUid());
-                loadBudgetData();
-            }
+        ExpenseTarget expenseTarget = new ExpenseTarget();
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.e("AuthCheck", "Authentication failed: " + e.getMessage());
-            }
-        });
+        // Sign in anonymously if the user is not signed in
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            FirebaseAuth.getInstance().signInAnonymously()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser signedInUser = FirebaseAuth.getInstance().getCurrentUser();
+                            Log.d("AuthCheck", "Signed in anonymously: " + signedInUser.getUid());
+                        } else {
+                            Log.e("AuthCheck", "Anonymous sign-in failed: " + task.getException());
+                        }
+                    });
+        }
 
-        budgetProgBar.setOnClickListener(v -> {
-            ExpenseTarget expenseTarget = new ExpenseTarget();
-            expenseTarget.show(getSupportFragmentManager(), "dialogbox_expensetarget");
-        });
+        // Set click listener for the ProgressBar
+        budgetProgBar.setOnClickListener(v -> expenseTarget.show(getSupportFragmentManager(), "dialogbox_expensetarget"));
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        // Call the method to fetch data when the activity starts
+        loadBudgetData();
 
-        bottomNavigationView.setOnItemSelectedListener(item ->{
-            int itemId = item.getItemId();
-            if (itemId == R.id.home) {
-                // Already on the home page, no action needed
-                return true;
-            } else if (itemId == R.id.menu) {
-                // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), MenuActivity.class));
-                return true; // Indicate that the item selection was handled
-            }else if (itemId == R.id.profile) {
-                // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                return true; // Indicate that the item selection was handled
-            }
-            return false; // Indicate that the item selection was not handled
-        });
-
-
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item ->
+                BottomNavigation.handleNavigation(MainActivity.this, item.getItemId()));
 
     }
+
+
+
+
+
+
 
     @Override
     protected void onStart() {
@@ -85,11 +75,13 @@ public class MainActivity extends AppCompatActivity {
         loadBudgetData();
     }
 
+
     private void loadBudgetData() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
 
+            // Fetching the budget data from Firestore
             db.collection("users")
                     .document(uid)
                     .collection("expenses")
@@ -102,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
                             String endDate = documentSnapshot.getString("endDate");
 
                             if (budget != null) {
-                                updateBudgetText(budget);
+                                updateBudgetText(budget); // Update the TextView with the budget
                                 updateMaxBudget(Integer.parseInt(budget));
-                                updateDateText(startDate, endDate);
+                                updateDateText(startDate, endDate);// Update the ProgressBar
                             } else {
                                 Log.d("Firestore", "No budget data available.");
                             }
@@ -118,20 +110,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateDateText(String start, String end) {
+
+
+
+    //Update Methods for the data
+    public void updateDateText(String start, String end){
         dateTextView.setText(start + " - " + end);
     }
 
+
     public void updateBudgetText(String budget) {
+        // Ensure the TextView is updated with the fetched budget
         expenseInputTextView.setText(budget + " Php");
     }
 
     public void updateMaxBudget(int budgetMax) {
+        // Ensure the ProgressBar is updated correctly
         int currentProgress = budgetProgBar.getProgress();
         budgetProgBar.setMax(budgetMax);
         ObjectAnimator progressAnimator = ObjectAnimator.ofInt(budgetProgBar, "progress", currentProgress, budgetMax);
-        progressAnimator.setDuration(1000);
+        progressAnimator.setDuration(1000); // 1 second for animation
         progressAnimator.setInterpolator(new DecelerateInterpolator());
         progressAnimator.start();
     }
+
 }
