@@ -26,21 +26,19 @@ public class EditInfoActivity extends AppCompatActivity {
         editDateOfBirth = findViewById(R.id.dBirthEditText);
 
         ImageButton doneEditingButton = findViewById(R.id.doneEditingButton);
-        doneEditingButton.setOnClickListener(v -> returnData());
+        doneEditingButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditInfoActivity.this, UserInfoActivity.class);
+            intent.putExtra("username", editUsername.getText().toString());
+            intent.putExtra("password", editPassword.getText().toString());
+            intent.putExtra("firstName", editFirstName.getText().toString());
+            intent.putExtra("lastName", editLastName.getText().toString());
+            intent.putExtra("email", editEmail.getText().toString());
+            intent.putExtra("contactNumber", editContactNumber.getText().toString());
+            intent.putExtra("dateOfBirth", editDateOfBirth.getText().toString());
+
+            startActivity(intent);  // Go back to UserInfoActivity
+            finish(); // Optional: close EditInfoActivity
+        });
     }
 
-    private void returnData() {
-        Intent resultIntent = new Intent();
-        // Pass data back to UserInfoActivity
-        resultIntent.putExtra("username", editUsername.getText().toString());
-        resultIntent.putExtra("password", editPassword.getText().toString());
-        resultIntent.putExtra("firstName", editFirstName.getText().toString());
-        resultIntent.putExtra("lastName", editLastName.getText().toString());
-        resultIntent.putExtra("email", editEmail.getText().toString());
-        resultIntent.putExtra("contactNumber", editContactNumber.getText().toString());
-        resultIntent.putExtra("dateOfBirth", editDateOfBirth.getText().toString());
-
-        setResult(RESULT_OK, resultIntent);
-        finish(); // Close activity and return to UserInfoActivity
-    }
 }
