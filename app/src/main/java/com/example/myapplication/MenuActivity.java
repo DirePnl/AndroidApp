@@ -65,7 +65,7 @@ public class MenuActivity extends AppCompatActivity {
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setSelectedItemId(R.id.menu);
 
         bottomNavigationView.setOnItemSelectedListener(item ->{
             int itemId = item.getItemId();
