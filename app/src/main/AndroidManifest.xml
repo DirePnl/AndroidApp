@@ -28,6 +28,26 @@
             android:exported="false" />
 
         <activity
+            android:name=".MenuActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".UserInfoActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".EditInfoActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".DeleteAccountActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>

@@ -58,24 +58,22 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
-        bottomNavigationView.setOnItemSelectedListener(item ->{
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.home) {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.menu) {
                 // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), MenuActivity.class));
+                startActivity(new Intent(MainActivity.this, MenuActivity.class));
                 return true; // Indicate that the item selection was handled
-            }else if (itemId == R.id.profile) {
-                // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            } else if (itemId == R.id.profile) {
+                // Navigate to Profile page
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 return true; // Indicate that the item selection was handled
             }
             return false; // Indicate that the item selection was not handled
         });
-
-
 
     }
 
