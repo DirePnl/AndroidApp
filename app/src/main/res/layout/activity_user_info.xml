@@ -111,10 +111,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
-                                android:layout_marginTop="42dp"
+                                android:layout_marginTop="48dp"
                                 android:layout_marginEnd="302dp"
                                 android:text="Username"
                                 app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -171,12 +172,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
-                                android:layout_marginTop="20dp"
                                 android:layout_marginEnd="288dp"
+                                android:layout_marginBottom="19dp"
                                 android:text="Date of Birth"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                                app:layout_constraintStart_toStartOf="parent" />
 
                             <TextView
                                 android:id="@+id/textView4"
@@ -191,7 +192,7 @@
                                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
                             <ImageButton
-                                android:id="@+id/imageButton"
+                                android:id="@+id/editInfoButton"
                                 android:layout_width="58dp"
                                 android:layout_height="48dp"
                                 android:layout_marginStart="244dp"
@@ -209,11 +210,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="200dp"
-                                android:layout_marginBottom="18dp"
+                                android:layout_marginTop="48dp"
                                 android:text="MyUserName"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password"
-                                app:layout_constraintStart_toEndOf="@+id/textView2" />
+                                app:layout_constraintStart_toEndOf="@+id/textView2"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/textview_password"
@@ -221,46 +222,46 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="237dp"
                                 android:layout_marginBottom="16dp"
-                                android:text="Change "
+                                android:text="Change"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password3"
+                                app:layout_constraintBottom_toTopOf="@+id/textview_fname"
                                 app:layout_constraintStart_toEndOf="@+id/textView4" />
 
                             <TextView
-                                android:id="@+id/textview_password2"
+                                android:id="@+id/textview_lname"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="231dp"
                                 android:layout_marginBottom="16dp"
                                 android:text="Change "
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password4"
+                                app:layout_constraintBottom_toTopOf="@+id/textview_email"
                                 app:layout_constraintStart_toEndOf="@+id/textView6" />
 
                             <TextView
-                                android:id="@+id/textview_password4"
+                                android:id="@+id/textview_email"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="200dp"
-                                android:layout_marginBottom="18dp"
+                                android:layout_marginBottom="17dp"
                                 android:text="name@email.com"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password5"
+                                app:layout_constraintBottom_toTopOf="@+id/textview_contactNumber"
                                 app:layout_constraintStart_toEndOf="@+id/textView7" />
 
                             <TextView
-                                android:id="@+id/textview_password5"
+                                android:id="@+id/textview_contactNumber"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="224dp"
-                                android:layout_marginBottom="23dp"
+                                android:layout_marginBottom="14dp"
                                 android:text="+63"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password6"
+                                app:layout_constraintBottom_toTopOf="@+id/textview_dateofbirth"
                                 app:layout_constraintStart_toEndOf="@+id/textView8" />
 
                             <TextView
-                                android:id="@+id/textview_password6"
+                                android:id="@+id/textview_dateofbirth"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="192dp"
@@ -271,14 +272,14 @@
                                 app:layout_constraintStart_toEndOf="@+id/textView9" />
 
                             <TextView
-                                android:id="@+id/textview_password3"
+                                android:id="@+id/textview_fname"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="233dp"
                                 android:layout_marginBottom="18dp"
                                 android:text="Change"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/textview_password2"
+                                app:layout_constraintBottom_toTopOf="@+id/textview_lname"
                                 app:layout_constraintStart_toEndOf="@+id/textView5" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -287,7 +288,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Button
-                    android:id="@+id/logout_button"
+                    android:id="@+id/proceed_delete_button"
                     android:layout_width="382dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="144dp"

@@ -16,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,24 +60,21 @@ public class MenuActivity extends AppCompatActivity {
         // Floating Action Button to add a new category
         fabAddCategory.setOnClickListener(view -> showAddCategoryDialog());
 
-
-
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu);
 
-        bottomNavigationView.setOnItemSelectedListener(item ->{
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu) {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.home) {
                 // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(MenuActivity.this, MainActivity.class));
                 return true; // Indicate that the item selection was handled
-            }else if (itemId == R.id.profile) {
-                // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            } else if (itemId == R.id.profile) {
+                // Navigate to Profile page
+                startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
                 return true; // Indicate that the item selection was handled
             }
             return false; // Indicate that the item selection was not handled
@@ -139,12 +135,7 @@ public class MenuActivity extends AppCompatActivity {
             });
         });
 
-
-
         dialog.show();
     }
-
-
-
 
 }
