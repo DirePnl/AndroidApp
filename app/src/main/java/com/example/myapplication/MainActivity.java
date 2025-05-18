@@ -1,20 +1,35 @@
 package com.example.myapplication;
 
 import android.animation.ObjectAnimator;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView expenseInputTextView, dateTextView;
     private FirebaseManager firebaseManager;
+    private RecyclerView expenseRecyclerView;
+    private ExpenseAdapter expenseAdapter;
+    private Button addExpenseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +52,16 @@ public class MainActivity extends AppCompatActivity {
         budgetProgBar = findViewById(R.id.progress_circular);
         expenseInputTextView = findViewById(R.id.expenseinput);
         dateTextView = findViewById(R.id.dateTextView);
+        expenseRecyclerView = findViewById(R.id.expenseRecyclerView);
+        addExpenseButton = findViewById(R.id.addExpense);
+
+        expenseAdapter = new ExpenseAdapter(this::showDeleteConfirmationDialog);
+        expenseRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        expenseRecyclerView.setAdapter(expenseAdapter);
 
         db = FirebaseFirestore.getInstance();
+
+        addExpenseButton.setOnClickListener(v -> showCategoryDialog());
 
         firebaseManager.signInAnonymouslyIfNeeded(new FirebaseManager.AuthCallback() {
             @Override
@@ -81,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         loadBudgetData();
+        loadExpenses(); // Load expenses when activity starts
     }
 
     private void loadBudgetData() {
@@ -121,15 +148,213 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateBudgetText(String budget) {
-        expenseInputTextView.setText(budget + " Php");
+        expenseInputTextView.setText("Php " + budget);
     }
 
     public void updateMaxBudget(int budgetMax) {
-        int currentProgress = budgetProgBar.getProgress();
         budgetProgBar.setMax(budgetMax);
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(budgetProgBar, "progress", currentProgress, budgetMax);
+        budgetProgBar.setProgress(budgetMax); // Start from maximum (full)
+        expenseInputTextView.setText(String.format("Php %d", budgetMax));
+    }
+
+    private void showCategoryDialog() {
+        final Dialog categoryDialog = new Dialog(this);
+        categoryDialog.setContentView(R.layout.dialogbox_category);
+        categoryDialog.setCancelable(true);
+
+        Button btnSavings = categoryDialog.findViewById(R.id.btnSavings);
+        Button btnFood = categoryDialog.findViewById(R.id.btnFood);
+        Button btnTranspo = categoryDialog.findViewById(R.id.btnTranspo);
+        Button btnUtilities = categoryDialog.findViewById(R.id.btnUtilities);
+        Button btnGrocery = categoryDialog.findViewById(R.id.btnGrocery);
+        Button btnShopping = categoryDialog.findViewById(R.id.btnShopping);
+
+        View.OnClickListener categoryClickListener = v -> {
+            String category = ((Button) v).getText().toString();
+            categoryDialog.dismiss();
+            if (category.equals("Savings")) {
+                showSavingsDialog(category);
+            } else {
+                showExpenseDialog(category);
+            }
+        };
+
+        btnSavings.setOnClickListener(categoryClickListener);
+        btnFood.setOnClickListener(categoryClickListener);
+        btnTranspo.setOnClickListener(categoryClickListener);
+        btnUtilities.setOnClickListener(categoryClickListener);
+        btnGrocery.setOnClickListener(categoryClickListener);
+        btnShopping.setOnClickListener(categoryClickListener);
+
+        categoryDialog.show();
+    }
+
+    private void showExpenseDialog(String category) {
+        final Dialog expenseDialog = new Dialog(this);
+        expenseDialog.setContentView(R.layout.dialogbox_expenses_main);
+        expenseDialog.setCancelable(true);
+
+        EditText etAmount = expenseDialog.findViewById(R.id.etAmount);
+        EditText etDescription = expenseDialog.findViewById(R.id.etDescription);
+        Button btnSave = expenseDialog.findViewById(R.id.btnSave);
+        Button btnCancel = expenseDialog.findViewById(R.id.btnCancel);
+
+        btnSave.setOnClickListener(v -> {
+            String amount = etAmount.getText().toString();
+            String description = etDescription.getText().toString();
+            if (!amount.isEmpty()) {
+                saveExpense(category, Double.parseDouble(amount), description, false);
+                expenseDialog.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> expenseDialog.dismiss());
+
+        expenseDialog.show();
+    }
+
+    private void showSavingsDialog(String category) {
+        final Dialog savingsDialog = new Dialog(this);
+        savingsDialog.setContentView(R.layout.dialogbox_savings_main);
+        savingsDialog.setCancelable(true);
+
+        EditText etAmount = savingsDialog.findViewById(R.id.etAmount);
+        EditText etDescription = savingsDialog.findViewById(R.id.etDescription);
+        Button btnSave = savingsDialog.findViewById(R.id.btnSave);
+        Button btnCancel = savingsDialog.findViewById(R.id.btnCancel);
+
+        btnSave.setOnClickListener(v -> {
+            String amount = etAmount.getText().toString();
+            String description = etDescription.getText().toString();
+            if (!amount.isEmpty()) {
+                saveExpense(category, Double.parseDouble(amount), description, true);
+                savingsDialog.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> savingsDialog.dismiss());
+
+        savingsDialog.show();
+    }
+
+    private void saveExpense(String category, double amount, String description, boolean isSavings) {
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        ExpenseItem expense = new ExpenseItem(category, amount, description, currentDate, isSavings);
+
+        // Save to Firebase
+        firebaseManager.saveExpense(expense, new FirebaseManager.ExpenseDataCallback() {
+            @Override
+            public void onExpensesLoaded(List<ExpenseItem> expenses) {
+                // Update the adapter with all expenses
+                expenseAdapter.clearExpenses();
+                for (ExpenseItem exp : expenses) {
+                    expenseAdapter.addExpense(exp);
+                }
+
+                // Update progress bar
+                updateProgressBar(expenses);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("MainActivity", "Error saving expense: " + e.getMessage());
+                Toast.makeText(MainActivity.this, "Failed to save expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadExpenses() {
+        firebaseManager.loadExpenses(new FirebaseManager.ExpenseDataCallback() {
+            @Override
+            public void onExpensesLoaded(List<ExpenseItem> expenses) {
+                // Update the adapter with loaded expenses
+                expenseAdapter.clearExpenses();
+                for (ExpenseItem expense : expenses) {
+                    expenseAdapter.addExpense(expense);
+                }
+
+                // Update progress bar
+                updateProgressBar(expenses);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("MainActivity", "Error loading expenses: " + e.getMessage());
+                Toast.makeText(MainActivity.this, "Failed to load expenses: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateProgressBar(List<ExpenseItem> expenses) {
+        double totalExpenses = 0;
+        double totalSavings = 0;
+
+        for (ExpenseItem expense : expenses) {
+            if (expense.isSavings()) {
+                totalSavings += expense.getAmount();
+            } else {
+                totalExpenses += expense.getAmount();
+            }
+        }
+
+        // Get the current budget target
+        int budgetMax = budgetProgBar.getMax();
+
+        // Calculate remaining budget
+        int remainingBudget = budgetMax - (int) (totalExpenses + totalSavings);
+
+        // Make sure we don't go below 0
+        remainingBudget = Math.max(0, remainingBudget);
+
+        // Update progress bar to show remaining budget
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(
+                budgetProgBar,
+                "progress",
+                budgetProgBar.getProgress(),
+                remainingBudget
+        );
         progressAnimator.setDuration(1000);
         progressAnimator.setInterpolator(new DecelerateInterpolator());
         progressAnimator.start();
+
+        // Update the budget text to show remaining amount
+        expenseInputTextView.setText(String.format("Php %d", remainingBudget));
+    }
+
+    private void showDeleteConfirmationDialog(ExpenseItem expense, int position) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_delete_confirmation);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button btnCancel = dialog.findViewById(R.id.btnCancel);
+        Button btnConfirmDelete = dialog.findViewById(R.id.btnConfirmDelete);
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnConfirmDelete.setOnClickListener(v -> {
+            firebaseManager.deleteExpense(expense, new FirebaseManager.DeleteExpenseCallback() {
+                @Override
+                public void onExpenseDeleted() {
+                    runOnUiThread(() -> {
+                        // Remove from adapter and update UI immediately
+                        expenseAdapter.removeExpense(position);
+                        // Update progress bar with current list
+                        updateProgressBar(expenseAdapter.getExpenseList());
+                        Toast.makeText(MainActivity.this, "Expense deleted successfully", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(MainActivity.this, "Error deleting expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+                }
+            });
+        });
+
+        dialog.show();
     }
 }

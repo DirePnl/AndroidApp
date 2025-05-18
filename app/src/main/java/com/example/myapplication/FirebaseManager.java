@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseManager {
+
     private final FirebaseFirestore db;
     private final FirebaseAuth auth;
     private final Context context;
@@ -22,11 +23,6 @@ public class FirebaseManager {
         this.auth = FirebaseAuth.getInstance();
         this.context = context;
     }
-
-
-
-
-
 
     // Save or update fixed budget target document
     public void saveBudgetTarget(UserData target) {
@@ -51,18 +47,7 @@ public class FirebaseManager {
                 });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    public void saveCategory(Category category, FirebaseManager.CategoryDataCallback callback) {
+    public void saveCategory(Category category, CategoryDataCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
             Log.w("FirebaseManager", "User not authenticated.");
@@ -85,9 +70,10 @@ public class FirebaseManager {
                 });
     }
 
-
     public interface CategoryDataCallback {
+
         void onCategoriesLoaded(List<Category> categories);
+
         void onError(Exception e);
     }
 
@@ -143,34 +129,11 @@ public class FirebaseManager {
                 });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Sign in anonymously if needed
     public interface AuthCallback {
+
         void onSuccess(FirebaseUser user);
+
         void onFailure(Exception e);
     }
 
@@ -191,5 +154,103 @@ public class FirebaseManager {
                     })
                     .addOnFailureListener(callback::onFailure);
         }
+    }
+
+    public interface ExpenseDataCallback {
+
+        void onExpensesLoaded(List<ExpenseItem> expenses);
+
+        void onError(Exception e);
+    }
+
+    // Save expense to Firestore
+    public void saveExpense(ExpenseItem expense, ExpenseDataCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            Log.w("FirebaseManager", "User not authenticated.");
+            return;
+        }
+
+        db.collection("users")
+                .document(user.getUid())
+                .collection("expenses")
+                .document("transactions")
+                .collection("items")
+                .add(expense)
+                .addOnSuccessListener(documentReference -> {
+                    // Set the document ID in the expense object
+                    expense.setId(documentReference.getId());
+                    Log.d("FirebaseManager", "Expense saved successfully with ID: " + documentReference.getId());
+                    Toast.makeText(context, "Expense saved!", Toast.LENGTH_SHORT).show();
+                    loadExpenses(callback); // Reload expenses after saving
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error saving expense: " + e.getMessage());
+                    Toast.makeText(context, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    callback.onError(e);
+                });
+    }
+
+    // Load all expenses from Firestore
+    public void loadExpenses(ExpenseDataCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            callback.onError(new Exception("User not authenticated."));
+            return;
+        }
+
+        db.collection("users")
+                .document(user.getUid())
+                .collection("expenses")
+                .document("transactions")
+                .collection("items")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    List<ExpenseItem> expenses = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        ExpenseItem expense = doc.toObject(ExpenseItem.class);
+                        if (expense != null) {
+                            expense.setId(doc.getId()); // Set the document ID
+                            expenses.add(expense);
+                        }
+                    }
+                    callback.onExpensesLoaded(expenses);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error loading expenses: " + e.getMessage());
+                    callback.onError(e);
+                });
+    }
+
+    public interface DeleteExpenseCallback {
+
+        void onExpenseDeleted();
+
+        void onError(Exception e);
+    }
+
+    public void deleteExpense(ExpenseItem expense, DeleteExpenseCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            Log.w("FirebaseManager", "User not authenticated.");
+            return;
+        }
+
+        // Delete directly using the document ID
+        db.collection("users")
+                .document(user.getUid())
+                .collection("expenses")
+                .document("transactions")
+                .collection("items")
+                .document(expense.getId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseManager", "Expense deleted successfully");
+                    callback.onExpenseDeleted();
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("FirebaseManager", "Error deleting expense", e);
+                    callback.onError(e);
+                });
     }
 }
