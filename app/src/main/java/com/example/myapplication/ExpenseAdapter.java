@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,14 +35,23 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
         ExpenseItem expense = expenseList.get(position);
+        String displayText = String.format("%s - Php %.2f", expense.getCategory(), expense.getAmount());
+        holder.categoryNameView.setText(displayText);
+        holder.labelView.setText(String.format("%s - %s", expense.getDescription(), expense.getDate()));
+
+        // Set click listener for the delete icon
+        holder.deleteIcon.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onExpenseClick(expense, position);
+            }
+        });
+
+        // Set click listener for the entire item
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onExpenseClick(expense, position);
             }
         });
-        String displayText = String.format("%s - Php %.2f", expense.getCategory(), expense.getAmount());
-        holder.categoryNameView.setText(displayText);
-        holder.labelView.setText(String.format("%s - %s", expense.getDescription(), expense.getDate()));
     }
 
     @Override
@@ -75,11 +85,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
         final TextView categoryNameView;
         final TextView labelView;
+        final ImageView deleteIcon;
 
         ExpenseViewHolder(View itemView) {
             super(itemView);
             categoryNameView = itemView.findViewById(R.id.tvCategoryName);
             labelView = itemView.findViewById(R.id.tvLabel);
+            deleteIcon = itemView.findViewById(R.id.ivDelete);
         }
     }
 }
