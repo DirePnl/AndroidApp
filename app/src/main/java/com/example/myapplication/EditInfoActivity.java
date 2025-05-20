@@ -7,7 +7,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class EditInfoActivity extends AppCompatActivity {
-
+//Josiah Code Start Here
     private EditText editUsername, editPassword, editFirstName, editLastName, editEmail,
             editContactNumber, editDateOfBirth;
 
@@ -27,7 +27,7 @@ public class EditInfoActivity extends AppCompatActivity {
 
         ImageButton doneEditingButton = findViewById(R.id.doneEditingButton);
         doneEditingButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditInfoActivity.this, UserInfoActivity.class);
+            Intent intent = new Intent(EditInfoActivity.this, ProfileActivity.class);
             intent.putExtra("username", editUsername.getText().toString());
             intent.putExtra("password", editPassword.getText().toString());
             intent.putExtra("firstName", editFirstName.getText().toString());
@@ -36,9 +36,9 @@ public class EditInfoActivity extends AppCompatActivity {
             intent.putExtra("contactNumber", editContactNumber.getText().toString());
             intent.putExtra("dateOfBirth", editDateOfBirth.getText().toString());
 
-            startActivity(intent);  // Go back to UserInfoActivity
+            startActivity(intent);  // Go back to ProfileActivity
             finish(); // Optional: close EditInfoActivity
         });
     }
-
+//Josiah Code End Here
 }
