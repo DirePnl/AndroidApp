@@ -1,42 +1,76 @@
 package com.example.myapplication;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
+    import android.content.Intent;
+    import android.os.Bundle;
+    import android.widget.Button;
+    import android.widget.ImageButton;
+    import android.widget.TextView;
+    import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
+    import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+//Josiah Code Start Here
+    public class ProfileActivity extends AppCompatActivity {
 
-public class ProfileActivity extends AppCompatActivity {
+        private TextView usernameUserInfoTextView, usernameTextView, passwordTextView, firstNameTextView,
+                lastNameTextView, emailTextView, contactNumberTextView, dateOfBirthTextView;
 
-    private TextView usernameProfileTextView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_user_profile);
 
-        usernameProfileTextView = findViewById(R.id.UsernameTextViewMain);
-        Intent intent = getIntent();
-        if (intent.hasExtra("username")) {
-            String username = intent.getStringExtra("username");
-            usernameProfileTextView.setText(username);
-        }
+            //TextViews for the user info
+            usernameUserInfoTextView = findViewById(R.id.UsernameTextViewMain2);
+            usernameTextView = findViewById(R.id.textview_username);
+            passwordTextView = findViewById(R.id.textview_password);
+            firstNameTextView = findViewById(R.id.textview_fname);
+            lastNameTextView = findViewById(R.id.textview_lname);
+            emailTextView = findViewById(R.id.textview_email);
+            contactNumberTextView = findViewById(R.id.textview_contactNumber);
+            dateOfBirthTextView = findViewById(R.id.textview_dateofbirth);
 
-        ImageButton viewUserInfoButton = findViewById(R.id.infoBtn);
+            // Check if there's updated info from EditInfoActivity
+            Intent intent = getIntent();
+            if (intent.hasExtra("username")) {
+                String username = intent.getStringExtra("username");
+                String password = intent.getStringExtra("password");
+                String firstName = intent.getStringExtra("firstName");
+                String lastName = intent.getStringExtra("lastName");
+                String email = intent.getStringExtra("email");
+                String contactNumber = intent.getStringExtra("contactNumber");
+                String dateOfBirth = intent.getStringExtra("dateOfBirth");
+                usernameUserInfoTextView.setText(username);
+                usernameTextView.setText(username);
+                passwordTextView.setText(password);
+                firstNameTextView.setText(firstName);
+                lastNameTextView.setText(lastName);
+                emailTextView.setText(email);
+                contactNumberTextView.setText(contactNumber);
+                dateOfBirthTextView.setText(dateOfBirth);
 
-        viewUserInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ProfileActivity.this, UserInfoActivity.class));
             }
-        });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            ImageButton editInfoButton = findViewById(R.id.editInfoButton);//Button to edit info
+            Button logoutButton = findViewById(R.id.proceed_delete_button);//Button to logout
+            Button deleteAccountButton = findViewById(R.id.delete_account_button);//Button to delete account
+
+            editInfoButton.setOnClickListener(v -> {
+                Intent editIntent = new Intent(com.example.myapplication.ProfileActivity.this, EditInfoActivity.class);
+                startActivity(editIntent);
+            });
+
+            logoutButton.setOnClickListener(v -> {
+                startActivity(new Intent(this, LoginActivity.class));
+            });
+
+            deleteAccountButton.setOnClickListener(v -> {
+                startActivity(new Intent(this, DeleteAccountActivity.class));
+            });
+
+
+    BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.profile);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -57,5 +91,5 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
-
+//Josiah Code End Here
 }
