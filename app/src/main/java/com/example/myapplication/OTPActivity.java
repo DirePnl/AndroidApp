@@ -47,49 +47,110 @@ public class OTPActivity extends AppCompatActivity {
             return;
         }
 
-        firestore.collection("email_otps")
-                .document(userEmail)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String savedOtp = documentSnapshot.getString("otp");
-                        if (enteredOtp.equals(savedOtp)) {
-                            Toast.makeText(this, "OTP Verified!", Toast.LENGTH_SHORT).show();
-
-                            auth.createUserWithEmailAndPassword(userEmail, userPassword)
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(this, LoginActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(this, "Account creation failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                        } else {
-                            Toast.makeText(this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+        // First check if user already exists
+        auth.fetchSignInMethodsForEmail(userEmail)
+                .addOnCompleteListener(authTask -> {
+                    if (authTask.isSuccessful()) {
+                        if (authTask.getResult().getSignInMethods() != null
+                                && !authTask.getResult().getSignInMethods().isEmpty()) {
+                            // User already exists
+                            Toast.makeText(this, "An account with this email already exists. Please login instead.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(this, LoginActivity.class));
+                            finish();
+                            return;
                         }
+
+                        // If user doesn't exist, proceed with OTP verification
+                        OTP.verifyOtp(userEmail, enteredOtp, firestore, new OTP.OnOtpVerified() {
+                            @Override
+                            public void onVerified(boolean success, String message) {
+                                if (success) {
+                                    // Double check user doesn't exist before creating
+                                    auth.fetchSignInMethodsForEmail(userEmail)
+                                            .addOnCompleteListener(finalCheck -> {
+                                                if (finalCheck.isSuccessful()) {
+                                                    if (finalCheck.getResult().getSignInMethods() != null
+                                                            && !finalCheck.getResult().getSignInMethods().isEmpty()) {
+                                                        // User was created between checks
+                                                        Toast.makeText(OTPActivity.this,
+                                                                "An account with this email already exists. Please login instead.",
+                                                                Toast.LENGTH_LONG).show();
+                                                        startActivity(new Intent(OTPActivity.this, LoginActivity.class));
+                                                        finish();
+                                                        return;
+                                                    }
+
+                                                    // Create user account
+                                                    auth.createUserWithEmailAndPassword(userEmail, userPassword)
+                                                            .addOnCompleteListener(task -> {
+                                                                if (task.isSuccessful()) {
+                                                                    Toast.makeText(OTPActivity.this,
+                                                                            "Account created successfully!",
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                    startActivity(new Intent(OTPActivity.this, LoginActivity.class));
+                                                                    finish();
+                                                                } else {
+                                                                    Toast.makeText(OTPActivity.this,
+                                                                            "Account creation failed: " + task.getException().getMessage(),
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                } else {
+                                                    Toast.makeText(OTPActivity.this,
+                                                            "Error verifying account status: " + finalCheck.getException().getMessage(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(OTPActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     } else {
-                        Toast.makeText(this, "No OTP found. Try resending.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Error checking account status: " + authTask.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to verify OTP", Toast.LENGTH_SHORT).show());
+                });
     }
 
     private void resendOtp() {
-        OTP.generateAndStoreOtp(userEmail, firestore, new OTP.OnOtpGenerated() {
-            @Override
-            public void onGenerated(String otp) {
-                Log.d("OTP", "Generated OTP: " + otp);
-                EmailSender.sendEmail(userEmail, otp);
-                Toast.makeText(OTPActivity.this, "OTP Resent: ", Toast.LENGTH_SHORT).show(); // Testing only
-            }
+        // Check if user exists before resending OTP
+        auth.fetchSignInMethodsForEmail(userEmail)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().getSignInMethods() != null
+                                && !task.getResult().getSignInMethods().isEmpty()) {
+                            // User already exists
+                            Toast.makeText(this,
+                                    "An account with this email already exists. Please login instead.",
+                                    Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(this, LoginActivity.class));
+                            finish();
+                            return;
+                        }
 
-            @Override
-            public void onFailed(String error) {
-                Toast.makeText(OTPActivity.this, "Failed to resend OTP: " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
+                        // User doesn't exist, proceed with resending OTP
+                        OTP.generateAndStoreOtp(userEmail, firestore, new OTP.OnOtpGenerated() {
+                            @Override
+                            public void onGenerated(String otp) {
+                                Log.d("OTP", "Generated OTP: " + otp);
+                                EmailSender.sendEmail(userEmail, otp);
+                                Toast.makeText(OTPActivity.this, "OTP Resent", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailed(String error) {
+                                Toast.makeText(OTPActivity.this,
+                                        "Failed to resend OTP: " + error,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(this,
+                                "Error checking account status: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
