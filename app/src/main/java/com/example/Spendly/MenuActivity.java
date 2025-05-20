@@ -76,19 +76,33 @@ public class MenuActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
+            Intent intent = null;
             if (itemId == R.id.menu) {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.home) {
                 // Navigate to MainActivity2 (Menu page)
-                startActivity(new Intent(MenuActivity.this, MainActivity.class));
+                intent = new Intent(MenuActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 return true; // Indicate that the item selection was handled
             } else if (itemId == R.id.profile) {
                 // Navigate to Profile page
-                startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
+                intent = new Intent(MenuActivity.this, ProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 return true; // Indicate that the item selection was handled
             }
-            return false; // Indicate that the item selection was not handled
+            if (intent != null) {
+                // Clear the back stack and start a new task
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            return false;
         });
     }
 
