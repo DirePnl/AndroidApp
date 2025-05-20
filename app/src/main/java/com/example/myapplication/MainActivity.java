@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,9 +63,7 @@ public class MainActivity extends AppCompatActivity {
         expenseRecyclerView = findViewById(R.id.expenseRecyclerView);
         addExpenseButton = findViewById(R.id.addExpense);
 
-        expenseAdapter = new ExpenseAdapter(this::showDeleteConfirmationDialog);
-        expenseRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        expenseRecyclerView.setAdapter(expenseAdapter);
+        setupRecyclerView();
 
         db = FirebaseFirestore.getInstance();
 
@@ -175,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnUtilities = categoryDialog.findViewById(R.id.btnUtilities);
         Button btnGrocery = categoryDialog.findViewById(R.id.btnGrocery);
         Button btnShopping = categoryDialog.findViewById(R.id.btnShopping);
+        Button btnOthers = categoryDialog.findViewById(R.id.btnOthers);
 
         View.OnClickListener categoryClickListener = v -> {
             String category = ((Button) v).getText().toString();
@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         btnUtilities.setOnClickListener(categoryClickListener);
         btnGrocery.setOnClickListener(categoryClickListener);
         btnShopping.setOnClickListener(categoryClickListener);
+        btnOthers.setOnClickListener(categoryClickListener);
 
         categoryDialog.show();
     }
@@ -452,5 +453,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void setupRecyclerView() {
+        expenseAdapter = new ExpenseAdapter(new ArrayList<>(), (expense, position) -> showDeleteConfirmationDialog(expense, position));
+        expenseRecyclerView.setAdapter(expenseAdapter);
+        expenseRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }

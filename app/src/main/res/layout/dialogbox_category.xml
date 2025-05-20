@@ -102,6 +102,17 @@
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
+            <Button
+                android:id="@+id/btnOthers"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:fontFamily="@font/spendlymain"
+                android:text="Others"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
         </GridLayout>
 
 

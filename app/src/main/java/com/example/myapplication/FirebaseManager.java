@@ -107,24 +107,36 @@ public class FirebaseManager {
 
     }
 
-    public void deleteCategory(String categoryId, CategoryDataCallback callback) {
+    public interface DeleteCategoryCallback {
+
+        void onCategoryDeleted();
+
+        void onError(Exception e);
+    }
+
+    public void deleteCategory(Category category, DeleteCategoryCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
             callback.onError(new Exception("User not authenticated"));
             return;
         }
 
+        if (category.getId() == null || category.getId().isEmpty()) {
+            callback.onError(new Exception("Category ID is missing"));
+            return;
+        }
+
         db.collection("users")
                 .document(user.getUid())
                 .collection("categories")
-                .document(categoryId)
+                .document(category.getId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("FirebaseManager", "Category deleted successfully with ID: " + categoryId);
-                    loadCategories(callback); // Reload categories after deletion
+                    Log.d("FirebaseManager", "Category deleted successfully with ID: " + category.getId());
+                    callback.onCategoryDeleted();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("FirebaseManager", "Failed to delete category with ID: " + categoryId, e);
+                    Log.e("FirebaseManager", "Failed to delete category with ID: " + category.getId(), e);
                     callback.onError(e);
                 });
     }
@@ -230,27 +242,15 @@ public class FirebaseManager {
     }
 
     public void deleteExpense(ExpenseItem expense, DeleteExpenseCallback callback) {
-        FirebaseUser user = auth.getCurrentUser();
-        if (user == null) {
-            Log.w("FirebaseManager", "User not authenticated.");
+        if (expense == null || expense.getId() == null) {
+            callback.onError(new IllegalArgumentException("Invalid expense"));
             return;
         }
 
-        // Delete directly using the document ID
-        db.collection("users")
-                .document(user.getUid())
-                .collection("expenses")
-                .document("transactions")
-                .collection("items")
+        db.collection("expenses")
                 .document(expense.getId())
                 .delete()
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("FirebaseManager", "Expense deleted successfully");
-                    callback.onExpenseDeleted();
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("FirebaseManager", "Error deleting expense", e);
-                    callback.onError(e);
-                });
+                .addOnSuccessListener(aVoid -> callback.onExpenseDeleted())
+                .addOnFailureListener(callback::onError);
     }
 }
