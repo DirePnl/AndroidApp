@@ -36,10 +36,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".UserInfoActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".EditInfoActivity"
             android:exported="false" />
 
