@@ -9,42 +9,42 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/MyApplication"
+        android:label="@string/Spendly"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
 
         <activity
-            android:name=".OTPActivity"
+            android:name="com.example.Spendly.OTPActivity"
             android:exported="false" />
 
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.example.Spendly.SignUpActivity"
             android:exported="true" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.Spendly.MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".MenuActivity"
+            android:name="com.example.Spendly.MenuActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ProfileActivity"
+            android:name="com.example.Spendly.ProfileActivity"
             android:exported="false" />
 
         <activity
-            android:name=".EditInfoActivity"
+            android:name="com.example.Spendly.EditInfoActivity"
             android:exported="false" />
 
         <activity
-            android:name=".DeleteAccountActivity"
+            android:name="com.example.Spendly.DeleteAccountActivity"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name="com.example.Spendly.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
