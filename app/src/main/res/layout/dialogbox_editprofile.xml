@@ -225,6 +225,7 @@
                             android:layout_height="61dp"
                             android:layout_marginStart="4dp"
                             android:layout_marginBottom="1dp"
+                            android:inputType="number"
                             android:hint="contact number"
                             app:prefixText="+63"
                             app:prefixTextColor="@color/purple_500"
@@ -247,6 +248,7 @@
                             android:layout_height="69dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginBottom="20dp"
+                            android:inputType="number"
                             android:hint="dd/mm/yyyy"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView18">
