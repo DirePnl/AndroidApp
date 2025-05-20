@@ -242,12 +242,22 @@ public class FirebaseManager {
     }
 
     public void deleteExpense(ExpenseItem expense, DeleteExpenseCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            callback.onError(new Exception("User not authenticated"));
+            return;
+        }
+
         if (expense == null || expense.getId() == null) {
             callback.onError(new IllegalArgumentException("Invalid expense"));
             return;
         }
 
-        db.collection("expenses")
+        db.collection("users")
+                .document(user.getUid())
+                .collection("expenses")
+                .document("transactions")
+                .collection("items")
                 .document(expense.getId())
                 .delete()
                 .addOnSuccessListener(aVoid -> callback.onExpenseDeleted())
