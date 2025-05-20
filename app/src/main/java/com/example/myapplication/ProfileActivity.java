@@ -16,7 +16,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.profile);
 
@@ -26,7 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.menu) {
-                // Navigate to MainActivity2 (Menu page)
+                // Navigate to Menu page
                 startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
                 return true; // Indicate that the item selection was handled
             } else if (itemId == R.id.home) {

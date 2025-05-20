@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.menu) {
-                // Navigate to MainActivity2 (Menu page)
+                // Navigate to Menu page
                 startActivity(new Intent(MainActivity.this, MenuActivity.class));
                 return true; // Indicate that the item selection was handled
             } else if (itemId == R.id.profile) {
