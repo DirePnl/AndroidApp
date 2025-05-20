@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,10 +13,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private TextView usernameProfileTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        usernameProfileTextView = findViewById(R.id.UsernameTextViewMain);
+        Intent intent = getIntent();
+        if (intent.hasExtra("username")) {
+            String username = intent.getStringExtra("username");
+            usernameProfileTextView.setText(username);
+        }
 
         ImageButton viewUserInfoButton = findViewById(R.id.infoBtn);
 
