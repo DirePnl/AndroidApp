@@ -7,10 +7,12 @@
     import android.widget.TextView;
     import androidx.appcompat.app.AppCompatActivity;
 
+    import com.google.android.material.bottomnavigation.BottomNavigationView;
+
     public class UserInfoActivity extends AppCompatActivity {
 
-        private TextView usernameTextView, passwordTextView, firstNameTextView, lastNameTextView,
-                emailTextView, contactNumberTextView, dateOfBirthTextView;
+        private TextView usernameUserInfoTextView, usernameTextView, passwordTextView, firstNameTextView,
+                lastNameTextView, emailTextView, contactNumberTextView, dateOfBirthTextView;
 
 
         @Override
@@ -19,6 +21,7 @@
             setContentView(R.layout.activity_user_info);
 
             //TextViews for the user info
+            usernameUserInfoTextView = findViewById(R.id.UsernameTextViewMain2);
             usernameTextView = findViewById(R.id.textview_username);
             passwordTextView = findViewById(R.id.textview_password);
             firstNameTextView = findViewById(R.id.textview_fname);
@@ -37,6 +40,7 @@
                 String email = intent.getStringExtra("email");
                 String contactNumber = intent.getStringExtra("contactNumber");
                 String dateOfBirth = intent.getStringExtra("dateOfBirth");
+                usernameUserInfoTextView.setText(username);
                 usernameTextView.setText(username);
                 passwordTextView.setText(password);
                 firstNameTextView.setText(firstName);
@@ -46,7 +50,6 @@
                 dateOfBirthTextView.setText(dateOfBirth);
 
             }
-
 
             ImageButton editInfoButton = findViewById(R.id.editInfoButton);//Button to edit info
             Button logoutButton = findViewById(R.id.proceed_delete_button);//Button to logout
@@ -63,6 +66,25 @@
 
             deleteAccountButton.setOnClickListener(v -> {
                 startActivity(new Intent(this, DeleteAccountActivity.class));
+            });
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.profile) {
+                    startActivity(new Intent(UserInfoActivity.this, ProfileActivity.class));
+                    return true;
+                } else if (itemId == R.id.menu) {
+                    // Navigate to MainActivity2 (Menu page)
+                    startActivity(new Intent(UserInfoActivity.this, MenuActivity.class));
+                    return true; // Indicate that the item selection was handled
+                } else if (itemId == R.id.home) {
+                    // Navigate to Home page
+                    startActivity(new Intent(UserInfoActivity.this, MainActivity.class));
+                    return true; // Indicate that the item selection was handled
+                }
+                return false; // Indicate that the item selection was not handled
             });
         }
 
