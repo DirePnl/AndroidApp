@@ -7,91 +7,90 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.ArrayList;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
+
+    private List<ExpenseItem> expenses;
+    private OnExpenseClickListener listener;
 
     public interface OnExpenseClickListener {
 
         void onExpenseClick(ExpenseItem expense, int position);
     }
 
-    private List<ExpenseItem> expenseList;
-    private OnExpenseClickListener clickListener;
-
-    public ExpenseAdapter(OnExpenseClickListener listener) {
-        expenseList = new ArrayList<>();
-        this.clickListener = listener;
+    public ExpenseAdapter(List<ExpenseItem> expenses, OnExpenseClickListener listener) {
+        this.expenses = expenses;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expense_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.expense_item, parent, false);
         return new ExpenseViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
-        ExpenseItem expense = expenseList.get(position);
-        String displayText = String.format("%s - Php %.2f", expense.getCategory(), expense.getAmount());
-        holder.categoryNameView.setText(displayText);
-        holder.labelView.setText(String.format("%s - %s", expense.getDescription(), expense.getDate()));
-
-        // Set click listener for the delete icon
-        holder.deleteIcon.setOnClickListener(v -> {
-            if (clickListener != null) {
-                clickListener.onExpenseClick(expense, position);
-            }
-        });
-
-        // Set click listener for the entire item
-        holder.itemView.setOnClickListener(v -> {
-            if (clickListener != null) {
-                clickListener.onExpenseClick(expense, position);
-            }
-        });
+        ExpenseItem expense = expenses.get(position);
+        holder.bind(expense);
     }
 
     @Override
     public int getItemCount() {
-        return expenseList.size();
-    }
-
-    public void addExpense(ExpenseItem expense) {
-        expenseList.add(expense);
-        notifyItemInserted(expenseList.size() - 1);
+        return expenses.size();
     }
 
     public void clearExpenses() {
-        expenseList.clear();
+        expenses.clear();
         notifyDataSetChanged();
     }
 
-    public void removeExpense(int position) {
-        if (position >= 0 && position < expenseList.size()) {
-            expenseList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, expenseList.size());
-        }
+    public void addExpense(ExpenseItem expense) {
+        expenses.add(expense);
+        notifyItemInserted(expenses.size() - 1);
     }
 
     public List<ExpenseItem> getExpenseList() {
-        return new ArrayList<>(expenseList); // Return a copy to prevent external modifications
+        return new ArrayList<>(expenses); // Return a copy to prevent external modifications
     }
 
-    static class ExpenseViewHolder extends RecyclerView.ViewHolder {
+    public void removeExpense(int position) {
+        if (position >= 0 && position < expenses.size()) {
+            expenses.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
 
-        final TextView categoryNameView;
-        final TextView labelView;
-        final ImageView deleteIcon;
+    class ExpenseViewHolder extends RecyclerView.ViewHolder {
 
-        ExpenseViewHolder(View itemView) {
+        private TextView tvDescription;
+        private TextView tvAmount;
+        private ImageView ivDelete;
+
+        ExpenseViewHolder(@NonNull View itemView) {
             super(itemView);
-            categoryNameView = itemView.findViewById(R.id.tvCategoryName);
-            labelView = itemView.findViewById(R.id.tvLabel);
-            deleteIcon = itemView.findViewById(R.id.ivDelete);
+            tvDescription = itemView.findViewById(R.id.tvExpenseDescription);
+            tvAmount = itemView.findViewById(R.id.tvExpenseAmount);
+            ivDelete = itemView.findViewById(R.id.ivDeleteExpense);
+
+            ivDelete.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onExpenseClick(expenses.get(position), position);
+                }
+            });
+        }
+
+        void bind(ExpenseItem expense) {
+            tvDescription.setText(expense.getDescription());
+            NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.US);
+            tvAmount.setText(formatter.format(expense.getAmount()));
         }
     }
 }

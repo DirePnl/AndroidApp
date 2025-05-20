@@ -1,73 +1,72 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<Category> categories;
+    private OnCategoryClickListener clickListener;
+    private OnExpenseClickListener expenseClickListener;
 
+    public interface OnCategoryClickListener {
 
-    public CategoryAdapter(List<Category> categories) {
+        void onCategoryClick(Category category, int position);
+    }
+
+    public interface OnExpenseClickListener {
+
+        void onExpenseClick(ExpenseItem expense, int position);
+    }
+
+    public CategoryAdapter(List<Category> categories, OnCategoryClickListener listener) {
         this.categories = categories;
+        this.clickListener = listener;
+    }
+
+    public void setExpenseClickListener(OnExpenseClickListener listener) {
+        this.expenseClickListener = listener;
     }
 
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.category_item, parent, false);
-        return new CategoryViewHolder(itemView);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false);
+        return new CategoryViewHolder(view);
     }
-
-
-
-
-
-
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        Category currentCategory = categories.get(position);
-        if (currentCategory != null) {
-            holder.tvCategoryName.setText(currentCategory.getCategoryName());
-            holder.tvLabel.setText(currentCategory.getLabel());
+        Category category = categories.get(position);
+        holder.categoryNameView.setText(category.getName());
+        holder.amountView.setText(String.format("Php %.2f", category.getTotalAmount()));
 
-            holder.ivDelete.setOnClickListener(v -> {
-                Log.d("CategoryAdapter", "Delete clicked for category ID: " + currentCategory.getId());
+        // Setup expenses RecyclerView
+        holder.expensesRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+        ExpenseAdapter expenseAdapter = new ExpenseAdapter(category.getExpenses(), new ExpenseAdapter.OnExpenseClickListener() {
+            @Override
+            public void onExpenseClick(ExpenseItem expense, int position) {
+                if (expenseClickListener != null) {
+                    expenseClickListener.onExpenseClick(expense, position);
+                }
+            }
+        });
+        holder.expensesRecyclerView.setAdapter(expenseAdapter);
 
-                FirebaseManager firebaseManager = new FirebaseManager(holder.itemView.getContext());
-                firebaseManager.deleteCategory(currentCategory.getId(), new FirebaseManager.CategoryDataCallback() {
-                    @Override
-                    public void onCategoriesLoaded(List<Category> updatedCategories) {
-                        Log.d("CategoryAdapter", "Categories updated after deletion");
-                        setCategories(updatedCategories); // Refresh the adapter
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("CategoryAdapter", "Error deleting category: " + e.getMessage());
-                    }
-                });
-            });
-
-
-        }
+        holder.deleteIcon.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onCategoryClick(category, position);
+            }
+        });
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -78,24 +77,33 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         categories.add(category);
         notifyItemInserted(categories.size() - 1);
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void setCategories(List<Category> newCategories) {
         this.categories = newCategories;
-        notifyDataSetChanged(); // Make sure to notify the adapter to refresh
+        notifyDataSetChanged();
     }
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvCategoryName;
-        public TextView tvLabel;
-
-        public ImageView ivDelete;
-
-        public CategoryViewHolder(View itemView) {
-            super(itemView);
-            tvCategoryName = itemView.findViewById(R.id.tvCategoryName);
-            tvLabel = itemView.findViewById(R.id.tvLabel);
-            ivDelete = itemView.findViewById(R.id.ivDelete);
+    public void removeCategory(int position) {
+        if (position >= 0 && position < categories.size()) {
+            categories.remove(position);
+            notifyItemRemoved(position);
         }
+    }
 
+    static class CategoryViewHolder extends RecyclerView.ViewHolder {
+
+        TextView categoryNameView;
+        TextView amountView;
+        ImageView deleteIcon;
+        RecyclerView expensesRecyclerView;
+
+        CategoryViewHolder(View itemView) {
+            super(itemView);
+            categoryNameView = itemView.findViewById(R.id.tvCategoryName);
+            amountView = itemView.findViewById(R.id.tvCategoryTotal);
+            deleteIcon = itemView.findViewById(R.id.ivDeleteCategory);
+            expensesRecyclerView = itemView.findViewById(R.id.rvExpenses);
+        }
     }
 }

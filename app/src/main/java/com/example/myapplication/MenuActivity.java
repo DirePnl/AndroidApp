@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,16 +18,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView rvCategories;
     private CategoryAdapter categoryAdapter;
     private List<Category> categories = new ArrayList<>();
-    private FloatingActionButton fabAddCategory;
     private FirebaseManager firebaseManager;
-    private Button delButton;
+    private TextView totalExpensesTextView;
+    private Map<String, Double> categoryTotals = new HashMap<>();
+    private ExpenseAdapter expenseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,20 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity);
 
         rvCategories = findViewById(R.id.rvCategories);
-        fabAddCategory = findViewById(R.id.fabAddCategory);
+        totalExpensesTextView = findViewById(R.id.totalExpensesTextView);
 
-        categoryAdapter = new CategoryAdapter(categories);
+        // Set up categories RecyclerView
+        categoryAdapter = new CategoryAdapter(categories, (category, position) -> {
+            showDeleteConfirmationDialog(category, position);
+        });
         rvCategories.setAdapter(categoryAdapter);
         rvCategories.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up expenses RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        expenseAdapter = new ExpenseAdapter(new ArrayList<>(), (expense, position) -> showDeleteExpenseConfirmationDialog(expense, position));
+        recyclerView.setAdapter(expenseAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         firebaseManager = new FirebaseManager(this);
 
@@ -47,7 +60,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onSuccess(FirebaseUser user) {
                 // Load categories once signed in
-                loadCategories();
+                loadExpenses();
             }
 
             @Override
@@ -56,9 +69,6 @@ public class MenuActivity extends AppCompatActivity {
                 Log.e("MenuActivity", "Anonymous sign-in failed", e);
             }
         });
-
-        // Floating Action Button to add a new category
-        fabAddCategory.setOnClickListener(view -> showAddCategoryDialog());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu);
@@ -79,22 +89,55 @@ public class MenuActivity extends AppCompatActivity {
             }
             return false; // Indicate that the item selection was not handled
         });
-
     }
 
-    private void loadCategories() {
-        firebaseManager.loadCategories(new FirebaseManager.CategoryDataCallback() {
+    private void loadExpenses() {
+        firebaseManager.loadExpenses(new FirebaseManager.ExpenseDataCallback() {
             @Override
-            public void onCategoriesLoaded(List<Category> loadedCategories) {
+            public void onExpensesLoaded(List<ExpenseItem> expenses) {
+                categoryTotals.clear();
                 categories.clear();
-                categories.addAll(loadedCategories);
+                Map<String, List<ExpenseItem>> categoryExpenses = new HashMap<>();
+
+                // Group expenses by category
+                for (ExpenseItem expense : expenses) {
+                    String category = expense.getCategory();
+                    double amount = expense.getAmount();
+
+                    // Add to category totals
+                    categoryTotals.put(category, categoryTotals.getOrDefault(category, 0.0) + amount);
+
+                    // Group expenses by category
+                    if (!categoryExpenses.containsKey(category)) {
+                        categoryExpenses.put(category, new ArrayList<>());
+                    }
+                    categoryExpenses.get(category).add(expense);
+                }
+
+                // Create category objects with their expenses
+                for (Map.Entry<String, Double> entry : categoryTotals.entrySet()) {
+                    String categoryName = entry.getKey();
+                    Category category = new Category(categoryName, entry.getValue());
+                    category.setExpenses(categoryExpenses.getOrDefault(categoryName, new ArrayList<>()));
+                    categories.add(category);
+                }
+
+                // Calculate total expenses
+                double totalExpenses = categoryTotals.values().stream().mapToDouble(Double::doubleValue).sum();
+                totalExpensesTextView.setText(String.format("Total Expenses: Php %.2f", totalExpenses));
+
+                // Update both adapters
                 categoryAdapter.notifyDataSetChanged();
+                expenseAdapter.clearExpenses();
+                for (ExpenseItem expense : expenses) {
+                    expenseAdapter.addExpense(expense);
+                }
             }
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(MenuActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
-                Log.e("MenuActivity", "Error loading categories", e);
+                Toast.makeText(MenuActivity.this, "Failed to load expenses", Toast.LENGTH_SHORT).show();
+                Log.e("MenuActivity", "Error loading expenses", e);
             }
         });
     }
@@ -123,7 +166,7 @@ public class MenuActivity extends AppCompatActivity {
                 @Override
                 public void onCategoriesLoaded(List<Category> categories) {
                     // After saving, reload the categories
-                    loadCategories();
+                    loadExpenses();
                     dialog.dismiss();
                 }
 
@@ -136,6 +179,64 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void showDeleteConfirmationDialog(Category category, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete this category?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    firebaseManager.deleteCategory(category, new FirebaseManager.DeleteCategoryCallback() {
+                        @Override
+                        public void onCategoryDeleted() {
+                            runOnUiThread(() -> {
+                                loadExpenses(); // Reload all expenses after deletion
+                                Toast.makeText(MenuActivity.this, "Category deleted successfully", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(MenuActivity.this, "Error deleting category: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showDeleteExpenseConfirmationDialog(ExpenseItem expense, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Expense")
+                .setMessage("Are you sure you want to delete this expense?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    firebaseManager.deleteExpense(expense, new FirebaseManager.DeleteExpenseCallback() {
+                        @Override
+                        public void onExpenseDeleted() {
+                            runOnUiThread(() -> {
+                                Toast.makeText(MenuActivity.this, "Expense deleted successfully", Toast.LENGTH_SHORT).show();
+                                loadExpenses(); // Reload all expenses to update the UI
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(MenuActivity.this, "Error deleting expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadExpenses(); // Reload expenses when activity resumes
     }
 
 }
