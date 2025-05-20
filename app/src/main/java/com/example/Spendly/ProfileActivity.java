@@ -59,13 +59,27 @@ public class ProfileActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
+            Intent intent = null;
             if (itemId == R.id.profile) {
                 return true;
             } else if (itemId == R.id.menu) {
-                startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
+                intent = new Intent(ProfileActivity.this, MenuActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 return true;
             } else if (itemId == R.id.home) {
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            if (intent != null) {
+                // Clear the back stack and start a new task
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // Prevent stacking
                 return true;
             }
             return false;

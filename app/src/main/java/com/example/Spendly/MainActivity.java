@@ -91,17 +91,29 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
+            Intent intent = null;
             if (itemId == R.id.home) {
                 // Already on the home page, no action needed
                 return true;
             } else if (itemId == R.id.menu) {
                 // Navigate to Menu page
-                startActivity(new Intent(MainActivity.this, MenuActivity.class));
+                intent = new Intent(MainActivity.this, MenuActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 return true; // Indicate that the item selection was handled
             } else if (itemId == R.id.profile) {
                 // Navigate to Profile page
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 return true; // Indicate that the item selection was handled
+            }
+            if (intent != null) {
+                startActivity(intent);
+                finish(); // Prevent stacking
+                return true;
             }
             return false; // Indicate that the item selection was not handled
         });
