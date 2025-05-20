@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.Spendly;
 
 import android.content.Context;
 import android.util.Log;
@@ -262,5 +262,64 @@ public class FirebaseManager {
                 .delete()
                 .addOnSuccessListener(aVoid -> callback.onExpenseDeleted())
                 .addOnFailureListener(callback::onError);
+    }
+
+    public interface UserProfileCallback {
+
+        void onProfileLoaded(UserProfile profile);
+
+        void onError(Exception e);
+    }
+
+    // Save or update user profile
+    public void saveUserProfile(UserProfile profile, UserProfileCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            callback.onError(new Exception("User not authenticated."));
+            return;
+        }
+
+        db.collection("users")
+                .document(user.getEmail()) // Using email as document ID for easy lookup
+                .set(profile)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseManager", "User profile saved successfully.");
+                    Toast.makeText(context, "Profile saved!", Toast.LENGTH_SHORT).show();
+                    loadUserProfile(callback); // Reload profile after saving
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error saving user profile: " + e.getMessage());
+                    Toast.makeText(context, "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    callback.onError(e);
+                });
+    }
+
+    // Load user profile from Firestore
+    public void loadUserProfile(UserProfileCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            callback.onError(new Exception("User not authenticated."));
+            return;
+        }
+
+        db.collection("users")
+                .document(user.getEmail()) // Using email as document ID for easy lookup
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        UserProfile profile = documentSnapshot.toObject(UserProfile.class);
+                        if (profile != null) {
+                            callback.onProfileLoaded(profile);
+                        } else {
+                            callback.onError(new Exception("Failed to parse user profile data."));
+                        }
+                    } else {
+                        callback.onError(new Exception("User profile not found."));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error loading user profile: " + e.getMessage());
+                    callback.onError(e);
+                });
     }
 }

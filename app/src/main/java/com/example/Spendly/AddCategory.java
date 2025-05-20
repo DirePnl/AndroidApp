@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.Spendly;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.myapplication.R;
 
 import java.util.List;
 
@@ -17,14 +16,12 @@ public class AddCategory extends AppCompatActivity {
 
     private EditText etCategoryName, etLabel;
     private Button btnAddCategory;
-    private FirebaseManager firebaseManager;
+    private FirebaseManager firebaseManager = new FirebaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_add_category);
-
-        firebaseManager = new FirebaseManager(this);
 
         etCategoryName = findViewById(R.id.etCategoryName);
         etLabel = findViewById(R.id.etLabel);

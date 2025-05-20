@@ -1,11 +1,12 @@
-package com.example.myapplication;
+package com.example.Spendly;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
 
 public class DeleteAccountActivity extends AppCompatActivity {
     @Override

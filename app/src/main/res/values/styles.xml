@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom DatePickerDialog style -->
+    <style name="CustomDatePickerDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:buttonBarPositiveButtonStyle">@style/WhiteButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/WhiteButtonStyle</item>
+        
+    </style>
+
+
+    <!-- White button style -->
+    <style name="WhiteButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources> 
