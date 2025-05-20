@@ -50,7 +50,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategories"
-        android:layout_width="408dp"
+        android:layout_width="392dp"
         android:layout_height="248dp"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
@@ -85,14 +85,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="392dp"
+        android:layout_height="275dp"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/allExpensesTitle"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintHeight_percent="0.4"/>
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintTop_toBottomOf="@id/allExpensesTitle"
+        tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout
         android:id="@+id/linear_layout_bottom"

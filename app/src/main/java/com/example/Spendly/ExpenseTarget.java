@@ -1,4 +1,5 @@
-package com.example.myapplication;
+package com.example.Spendly;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.util.Pair;
+
+import com.example.myapplication.R;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class ExpenseTarget extends AppCompatDialogFragment {
+
     //for datepicker
     UserData target;
     public EditText startDateEditText, endDateEditText;
@@ -34,6 +38,7 @@ public class ExpenseTarget extends AppCompatDialogFragment {
 
         MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("Select Date Range");
+
         MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
 
         View.OnClickListener calendarClickListener = v -> picker.show(getParentFragmentManager(), "date_picker");
@@ -89,4 +94,3 @@ public class ExpenseTarget extends AppCompatDialogFragment {
         return dialog;
     }
 }
-

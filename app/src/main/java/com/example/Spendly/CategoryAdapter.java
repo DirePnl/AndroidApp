@@ -1,14 +1,16 @@
-package com.example.myapplication;
+package com.example.Spendly;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.R;
+
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
@@ -61,11 +63,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         });
         holder.expensesRecyclerView.setAdapter(expenseAdapter);
 
-        holder.deleteIcon.setOnClickListener(v -> {
-            if (clickListener != null) {
-                clickListener.onCategoryClick(category, position);
-            }
-        });
     }
 
     @Override
@@ -95,14 +92,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         TextView categoryNameView;
         TextView amountView;
-        ImageView deleteIcon;
         RecyclerView expensesRecyclerView;
 
         CategoryViewHolder(View itemView) {
             super(itemView);
             categoryNameView = itemView.findViewById(R.id.tvCategoryName);
             amountView = itemView.findViewById(R.id.tvCategoryTotal);
-            deleteIcon = itemView.findViewById(R.id.ivDeleteCategory);
             expensesRecyclerView = itemView.findViewById(R.id.rvExpenses);
         }
     }
