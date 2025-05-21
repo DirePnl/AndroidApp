@@ -2,7 +2,7 @@ package com.example.Spendly;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//Ashley Start Code
 public class Category {
 
     private String id;
@@ -72,3 +72,4 @@ public class Category {
         this.expenses = expenses;
     }
 }
+//Ashley End Code

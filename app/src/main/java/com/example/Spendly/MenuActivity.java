@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+//Kyle Start Code
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView rvCategories;
@@ -255,3 +255,4 @@ public class MenuActivity extends AppCompatActivity {
     }
 
 }
+//Kyle End Code

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+//Josiah Start Code
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView usernameUserInfoTextView, usernameTextView, firstNameTextView,
@@ -117,3 +117,4 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 }
+//Josiah End Code

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+//Kyle Start Code
 public class OTPActivity extends AppCompatActivity {
 
     private EditText otpInput;
@@ -155,3 +155,4 @@ public class OTPActivity extends AppCompatActivity {
                 });
     }
 }
+//Kyle End Code

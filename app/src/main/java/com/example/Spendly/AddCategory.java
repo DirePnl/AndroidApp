@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 
 import java.util.List;
-
+//Kyle Start Code
 public class AddCategory extends AppCompatActivity {
 
     private EditText etCategoryName, etLabel;
@@ -64,3 +64,4 @@ public class AddCategory extends AppCompatActivity {
         });
     }
 }
+//Kyle End Code

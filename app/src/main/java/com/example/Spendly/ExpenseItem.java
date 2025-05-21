@@ -1,5 +1,5 @@
 package com.example.Spendly;
-
+//Kyle Start Code
 public class ExpenseItem {
 
     private String id; // Firebase document ID
@@ -71,3 +71,4 @@ public class ExpenseItem {
         isSavings = savings;
     }
 }
+//Kyle End Code

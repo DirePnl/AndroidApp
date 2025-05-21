@@ -12,7 +12,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+//Kyle Start Code
 public class EmailSender {
 
     public static void sendEmail(final String toEmail, final String otp) {
@@ -61,3 +61,4 @@ public class EmailSender {
         executorService.shutdown(); // Shut down the executor
     }
 }
+//Kyle End Code

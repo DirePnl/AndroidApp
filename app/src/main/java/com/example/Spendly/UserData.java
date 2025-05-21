@@ -1,5 +1,5 @@
 package com.example.Spendly;
-
+//Kyle Start Code
 public class UserData {
     public String budget;
     public String startDate;
@@ -50,3 +50,4 @@ public class UserData {
         this.note = note;
     }
 }
+//Kyle End Code

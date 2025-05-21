@@ -8,7 +8,7 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.myapplication" />
+                  <option name="appId" value="com.example.spendly" />
                   <option name="mobileSdkAppId" value="1:249193467974:android:79f9e2fc3d8bc2b64a3a47" />
                   <option name="projectId" value="spendly-7d5f9" />
                   <option name="projectNumber" value="249193467974" />

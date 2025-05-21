@@ -12,7 +12,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//Kyle Start Code
 public class FirebaseManager {
 
     private final FirebaseFirestore db;
@@ -365,3 +365,4 @@ public class FirebaseManager {
                 });
     }
 }
+//Kyle End Code

@@ -7,7 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
-
+//Josiah Start Code
 public class DeleteAccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,3 +33,4 @@ public class DeleteAccountActivity extends AppCompatActivity {
     }
 
 }
+//Josiah End Code

@@ -14,7 +14,7 @@ import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+//Kyle Start Code
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
@@ -241,3 +241,4 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 }
+//Kyle End Code

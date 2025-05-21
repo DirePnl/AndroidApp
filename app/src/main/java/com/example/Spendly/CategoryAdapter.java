@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 
 import java.util.List;
-
+//Ashley Start Code
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<Category> categories;
@@ -103,3 +103,4 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     }
 }
+//Ashley End Code

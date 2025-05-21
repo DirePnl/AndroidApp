@@ -14,7 +14,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+//Josiah Start Code
 public class EditInfoActivity extends AppCompatActivity {
 
     private TextInputEditText editUsername, editFirstName, editLastName, editEmail,
@@ -202,3 +202,4 @@ public class EditInfoActivity extends AppCompatActivity {
         datePicker.show(getSupportFragmentManager(), "date_picker");
     }
 }
+//Josiah End Code

@@ -1,5 +1,5 @@
 package com.example.Spendly;
-
+//Kyle Start Code
 public class UserProfile {
 
     private String username;
@@ -82,3 +82,4 @@ public class UserProfile {
         this.dateOfBirth = dateOfBirth;
     }
 }
+//Kyle End Code

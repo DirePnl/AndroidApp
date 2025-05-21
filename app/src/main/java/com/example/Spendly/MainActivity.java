@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
-
+//Kyle Start Code
 public class MainActivity extends AppCompatActivity {
 
     private static final double LOW_BUDGET_THRESHOLD = 0.2; // 20% of budget
@@ -635,3 +635,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+//Kyle End Code

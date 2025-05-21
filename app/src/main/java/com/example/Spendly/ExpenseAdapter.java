@@ -14,7 +14,7 @@ import java.util.List;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ArrayList;
-
+//Kyle Start Code
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
 
     private List<ExpenseItem> expenses;
@@ -99,3 +99,4 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         }
     }
 }
+//Kyle End Code
