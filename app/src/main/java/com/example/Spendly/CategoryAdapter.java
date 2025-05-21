@@ -100,5 +100,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             amountView = itemView.findViewById(R.id.tvCategoryTotal);
             expensesRecyclerView = itemView.findViewById(R.id.rvExpenses);
         }
+
     }
 }

@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
-        android:inputType="none"
+        android:inputType="number"
         android:textSize="12sp"
         android:fontFamily="@font/spendlymain"
         android:drawableEnd="@drawable/baseline_attach_money_24"

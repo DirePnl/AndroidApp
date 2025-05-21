@@ -44,6 +44,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         holder.bind(expense);
     }
 
+
+
     @Override
     public int getItemCount() {
         return expenses.size();

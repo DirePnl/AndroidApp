@@ -1,6 +1,7 @@
 package com.example.Spendly;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView expenseRecyclerView;
     private ExpenseAdapter expenseAdapter;
     private Button addExpenseButton;
+    private Dialog currentLowBudgetDialog = null;
+    private Dialog currentDateWarningDialog = null;
+    private Dialog currentCategoryDialog = null;
+    private Dialog currentExpenseDialog = null;
+    private Dialog currentSavingsDialog = null;
+    private Dialog currentDeleteDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadBudgetData();
         loadExpenses(); // Load expenses when activity starts
     }
 
@@ -147,6 +153,13 @@ public class MainActivity extends AppCompatActivity {
                                 updateBudgetText(budget);
                                 updateMaxBudget(Integer.parseInt(budget));
                                 updateDateText(startDate, endDate);
+
+                                // Check if end date is within 5 days
+                                checkEndDateWarning(endDate);
+
+                                // Clear and reload expenses when budget data is loaded
+                                expenseAdapter.clearExpenses();
+                                loadExpenses();
                             } else {
                                 Log.d("Firestore", "No budget data available.");
                             }
@@ -175,21 +188,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCategoryDialog() {
-        final Dialog categoryDialog = new Dialog(this);
-        categoryDialog.setContentView(R.layout.dialogbox_category);
-        categoryDialog.setCancelable(true);
+        // Dismiss any existing dialog
+        dismissAllDialogs();
 
-        Button btnSavings = categoryDialog.findViewById(R.id.btnSavings);
-        Button btnFood = categoryDialog.findViewById(R.id.btnFood);
-        Button btnTranspo = categoryDialog.findViewById(R.id.btnTranspo);
-        Button btnUtilities = categoryDialog.findViewById(R.id.btnUtilities);
-        Button btnGrocery = categoryDialog.findViewById(R.id.btnGrocery);
-        Button btnShopping = categoryDialog.findViewById(R.id.btnShopping);
-        Button btnOthers = categoryDialog.findViewById(R.id.btnOthers);
+        currentCategoryDialog = new Dialog(this);
+        currentCategoryDialog.setContentView(R.layout.dialogbox_category);
+        currentCategoryDialog.setCancelable(true);
+
+        Button btnSavings = currentCategoryDialog.findViewById(R.id.btnSavings);
+        Button btnFood = currentCategoryDialog.findViewById(R.id.btnFood);
+        Button btnTranspo = currentCategoryDialog.findViewById(R.id.btnTranspo);
+        Button btnUtilities = currentCategoryDialog.findViewById(R.id.btnUtilities);
+        Button btnGrocery = currentCategoryDialog.findViewById(R.id.btnGrocery);
+        Button btnShopping = currentCategoryDialog.findViewById(R.id.btnShopping);
+        Button btnOthers = currentCategoryDialog.findViewById(R.id.btnOthers);
 
         View.OnClickListener categoryClickListener = v -> {
             String category = ((Button) v).getText().toString();
-            categoryDialog.dismiss();
+            currentCategoryDialog.dismiss();
+            currentCategoryDialog = null;
             if (category.equals("Savings")) {
                 showSavingsDialog(category);
             } else {
@@ -205,55 +222,97 @@ public class MainActivity extends AppCompatActivity {
         btnShopping.setOnClickListener(categoryClickListener);
         btnOthers.setOnClickListener(categoryClickListener);
 
-        categoryDialog.show();
+        currentCategoryDialog.show();
     }
 
     private void showExpenseDialog(String category) {
-        final Dialog expenseDialog = new Dialog(this);
-        expenseDialog.setContentView(R.layout.dialogbox_expenses_main);
-        expenseDialog.setCancelable(true);
+        // Dismiss any existing dialog
+        dismissAllDialogs();
 
-        EditText etAmount = expenseDialog.findViewById(R.id.etAmount);
-        EditText etDescription = expenseDialog.findViewById(R.id.etDescription);
-        Button btnSave = expenseDialog.findViewById(R.id.btnSave);
-        Button btnCancel = expenseDialog.findViewById(R.id.btnCancel);
+        currentExpenseDialog = new Dialog(this);
+        currentExpenseDialog.setContentView(R.layout.dialogbox_expenses_main);
+        currentExpenseDialog.setCancelable(true);
+
+        EditText etAmount = currentExpenseDialog.findViewById(R.id.etAmount);
+        EditText etDescription = currentExpenseDialog.findViewById(R.id.etDescription);
+        Button btnSave = currentExpenseDialog.findViewById(R.id.btnSave);
+        Button btnCancel = currentExpenseDialog.findViewById(R.id.btnCancel);
 
         btnSave.setOnClickListener(v -> {
             String amount = etAmount.getText().toString();
             String description = etDescription.getText().toString();
             if (!amount.isEmpty()) {
                 saveExpense(category, Double.parseDouble(amount), description, false);
-                expenseDialog.dismiss();
+                currentExpenseDialog.dismiss();
+                currentExpenseDialog = null;
             }
         });
 
-        btnCancel.setOnClickListener(v -> expenseDialog.dismiss());
+        btnCancel.setOnClickListener(v -> {
+            currentExpenseDialog.dismiss();
+            currentExpenseDialog = null;
+        });
 
-        expenseDialog.show();
+        currentExpenseDialog.show();
     }
 
     private void showSavingsDialog(String category) {
-        final Dialog savingsDialog = new Dialog(this);
-        savingsDialog.setContentView(R.layout.dialogbox_savings_main);
-        savingsDialog.setCancelable(true);
+        // Dismiss any existing dialog
+        dismissAllDialogs();
 
-        EditText etAmount = savingsDialog.findViewById(R.id.etAmount);
-        EditText etDescription = savingsDialog.findViewById(R.id.etDescription);
-        Button btnSave = savingsDialog.findViewById(R.id.btnSave);
-        Button btnCancel = savingsDialog.findViewById(R.id.btnCancel);
+        currentSavingsDialog = new Dialog(this);
+        currentSavingsDialog.setContentView(R.layout.dialogbox_savings_main);
+        currentSavingsDialog.setCancelable(true);
+
+        EditText etAmount = currentSavingsDialog.findViewById(R.id.etAmount);
+        EditText etDescription = currentSavingsDialog.findViewById(R.id.etDescription);
+        Button btnSave = currentSavingsDialog.findViewById(R.id.btnSave);
+        Button btnCancel = currentSavingsDialog.findViewById(R.id.btnCancel);
 
         btnSave.setOnClickListener(v -> {
             String amount = etAmount.getText().toString();
             String description = etDescription.getText().toString();
             if (!amount.isEmpty()) {
                 saveExpense(category, Double.parseDouble(amount), description, true);
-                savingsDialog.dismiss();
+                currentSavingsDialog.dismiss();
+                currentSavingsDialog = null;
             }
         });
 
-        btnCancel.setOnClickListener(v -> savingsDialog.dismiss());
+        btnCancel.setOnClickListener(v -> {
+            currentSavingsDialog.dismiss();
+            currentSavingsDialog = null;
+        });
 
-        savingsDialog.show();
+        currentSavingsDialog.show();
+    }
+
+    private void refreshActivity() {
+        // 1. Clear any dialogs
+        dismissAllDialogs();
+
+        // 2. Clear adapter data
+        expenseAdapter.clearExpenses();
+
+        // 3. Reload new data (this should call setExpenses() or add new data to adapter)
+        loadBudgetData();
+        loadExpenses(); // this must update the adapter and call notifyDataSetChanged()
+
+        // 4. Notify adapter (only if loadExpenses doesn't already do it)
+        expenseAdapter.notifyDataSetChanged();
+
+        // 5. Optional UI tweaks
+        expenseRecyclerView.invalidate();
+        expenseRecyclerView.requestLayout();
+        expenseRecyclerView.smoothScrollToPosition(0);
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshActivity();
     }
 
     private void saveExpense(String category, double amount, String description, boolean isSavings) {
@@ -272,6 +331,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // Update progress bar
                 updateProgressBar(expenses);
+
+                // Refresh the activity
+                refreshActivity();
             }
 
             @Override
@@ -291,6 +353,9 @@ public class MainActivity extends AppCompatActivity {
                 for (ExpenseItem expense : expenses) {
                     expenseAdapter.addExpense(expense);
                 }
+
+                // Notify adapter of data change
+                expenseAdapter.notifyDataSetChanged();
 
                 // Get the current budget target
                 int budgetMax = budgetProgBar.getMax();
@@ -330,6 +395,44 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Failed to load expenses: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void checkEndDateWarning(String endDateStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+            Date endDate = sdf.parse(endDateStr);
+            Date currentDate = new Date();
+
+            // Calculate days difference
+            long diffInMillis = endDate.getTime() - currentDate.getTime();
+            long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
+
+            if (diffInDays <= 5 && diffInDays >= 0) {
+                showDateWarningDialog(diffInDays);
+            }
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error parsing date: " + e.getMessage());
+        }
+    }
+
+    private void showDateWarningDialog(long daysRemaining) {
+        // Dismiss any existing dialog
+        dismissAllDialogs();
+
+        currentDateWarningDialog = new Dialog(this);
+        currentDateWarningDialog.setContentView(R.layout.dialog_date_warning);
+        currentDateWarningDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView warningMessage = currentDateWarningDialog.findViewById(R.id.warningMessage);
+        warningMessage.setText(String.format("Your budget period will end in %d days. Consider setting a new budget target.", daysRemaining));
+
+        Button btnOk = currentDateWarningDialog.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(v -> {
+            currentDateWarningDialog.dismiss();
+            currentDateWarningDialog = null;
+        });
+
+        currentDateWarningDialog.show();
     }
 
     private void updateProgressBar(List<ExpenseItem> expenses) {
@@ -372,12 +475,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Calculate remaining budget
+        // Calculate remaining budget (can be negative)
         int remainingBudget = budgetMax - (int) (totalExpenses + totalSavings);
-        remainingBudget = Math.max(0, remainingBudget);
-
-        // Calculate budget percentage
-        double budgetPercentage = (double) remainingBudget / budgetMax;
 
         // Animate to the new remaining budget value
         ObjectAnimator progressAnimator = ObjectAnimator.ofInt(
@@ -393,46 +492,73 @@ public class MainActivity extends AppCompatActivity {
         // Update the budget text to show remaining amount
         expenseInputTextView.setText(String.format("Php %d", remainingBudget));
 
-        // Check if budget is low
-        if (budgetPercentage <= LOW_BUDGET_THRESHOLD) {
+        // Check if budget is low or negative
+        if (remainingBudget <= 0) {
+            // For negative budget, use red color
             budgetProgBar.setProgressDrawable(getResources().getDrawable(R.drawable.circle_red));
-            if (!isAnimating) {
-                budgetProgBar.startAnimation(pulseAnimation);
-                isAnimating = true;
-            }
-            showLowBudgetWarning(remainingBudget, budgetMax);
-        } else {
-            budgetProgBar.setProgressDrawable(getResources().getDrawable(R.drawable.circle));
             budgetProgBar.clearAnimation();
             isAnimating = false;
+            showLowBudgetWarning(remainingBudget, budgetMax);
+        } else {
+            double budgetPercentage = (double) remainingBudget / budgetMax;
+            if (budgetPercentage <= LOW_BUDGET_THRESHOLD) {
+                budgetProgBar.setProgressDrawable(getResources().getDrawable(R.drawable.circle_red));
+                if (!isAnimating) {
+                    budgetProgBar.startAnimation(pulseAnimation);
+                    isAnimating = true;
+                }
+                // Only show warning if we haven't shown it for negative budget
+                if (remainingBudget > 0) {
+                    showLowBudgetWarning(remainingBudget, budgetMax);
+                }
+            } else {
+                budgetProgBar.setProgressDrawable(getResources().getDrawable(R.drawable.circle));
+                budgetProgBar.clearAnimation();
+                isAnimating = false;
+            }
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private void showLowBudgetWarning(int remainingBudget, int totalBudget) {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_low_budget_warning);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // Dismiss any existing dialog
+        if (currentLowBudgetDialog != null && currentLowBudgetDialog.isShowing()) {
+            currentLowBudgetDialog.dismiss();
+        }
 
-        TextView warningMessage = dialog.findViewById(R.id.warningMessage);
+        currentLowBudgetDialog = new Dialog(this);
+        currentLowBudgetDialog.setContentView(R.layout.dialog_low_budget_warning);
+        currentLowBudgetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView warningMessage = currentLowBudgetDialog.findViewById(R.id.warningMessage);
         double percentage = (remainingBudget * 100.0) / totalBudget;
         warningMessage.setText(String.format("Your budget is running low! You have %.1f%% (Php %d) remaining.",
                 percentage, remainingBudget));
 
-        Button btnOk = dialog.findViewById(R.id.btnOk);
-        btnOk.setOnClickListener(v -> dialog.dismiss());
+        Button btnOk = currentLowBudgetDialog.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(v -> {
+            currentLowBudgetDialog.dismiss();
+            currentLowBudgetDialog = null;
+        });
 
-        dialog.show();
+        currentLowBudgetDialog.show();
     }
 
     private void showDeleteConfirmationDialog(ExpenseItem expense, int position) {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_delete_confirmation);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // Dismiss any existing dialog
+        dismissAllDialogs();
 
-        Button btnCancel = dialog.findViewById(R.id.btnCancel);
-        Button btnConfirmDelete = dialog.findViewById(R.id.btnConfirmDelete);
+        currentDeleteDialog = new Dialog(this);
+        currentDeleteDialog.setContentView(R.layout.dialog_delete_confirmation);
+        currentDeleteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        Button btnCancel = currentDeleteDialog.findViewById(R.id.btnCancel);
+        Button btnConfirmDelete = currentDeleteDialog.findViewById(R.id.btnConfirmDelete);
+
+        btnCancel.setOnClickListener(v -> {
+            currentDeleteDialog.dismiss();
+            currentDeleteDialog = null;
+        });
 
         btnConfirmDelete.setOnClickListener(v -> {
             firebaseManager.deleteExpense(expense, new FirebaseManager.DeleteExpenseCallback() {
@@ -449,7 +575,11 @@ public class MainActivity extends AppCompatActivity {
                         updateProgressBar(currentExpenses);
 
                         Toast.makeText(MainActivity.this, "Expense deleted successfully", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
+                        currentDeleteDialog.dismiss();
+                        currentDeleteDialog = null;
+
+                        // Refresh the activity
+                        refreshActivity();
                     });
                 }
 
@@ -457,18 +587,51 @@ public class MainActivity extends AppCompatActivity {
                 public void onError(Exception e) {
                     runOnUiThread(() -> {
                         Toast.makeText(MainActivity.this, "Error deleting expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
+                        currentDeleteDialog.dismiss();
+                        currentDeleteDialog = null;
                     });
                 }
             });
         });
 
-        dialog.show();
+        currentDeleteDialog.show();
     }
 
     private void setupRecyclerView() {
+        expenseRecyclerView.smoothScrollToPosition(0);
         expenseAdapter = new ExpenseAdapter(new ArrayList<>(), (expense, position) -> showDeleteConfirmationDialog(expense, position));
         expenseRecyclerView.setAdapter(expenseAdapter);
         expenseRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Add smooth scrolling behavior
+        expenseRecyclerView.setHasFixedSize(true);
+        expenseRecyclerView.setItemAnimator(null); // Disable default animations for smoother scrolling
+    }
+
+    private void dismissAllDialogs() {
+        if (currentLowBudgetDialog != null && currentLowBudgetDialog.isShowing()) {
+            currentLowBudgetDialog.dismiss();
+            currentLowBudgetDialog = null;
+        }
+        if (currentDateWarningDialog != null && currentDateWarningDialog.isShowing()) {
+            currentDateWarningDialog.dismiss();
+            currentDateWarningDialog = null;
+        }
+        if (currentCategoryDialog != null && currentCategoryDialog.isShowing()) {
+            currentCategoryDialog.dismiss();
+            currentCategoryDialog = null;
+        }
+        if (currentExpenseDialog != null && currentExpenseDialog.isShowing()) {
+            currentExpenseDialog.dismiss();
+            currentExpenseDialog = null;
+        }
+        if (currentSavingsDialog != null && currentSavingsDialog.isShowing()) {
+            currentSavingsDialog.dismiss();
+            currentSavingsDialog = null;
+        }
+        if (currentDeleteDialog != null && currentDeleteDialog.isShowing()) {
+            currentDeleteDialog.dismiss();
+            currentDeleteDialog = null;
+        }
     }
 }
