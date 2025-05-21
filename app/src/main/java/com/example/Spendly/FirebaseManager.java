@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +263,47 @@ public class FirebaseManager {
                 .delete()
                 .addOnSuccessListener(aVoid -> callback.onExpenseDeleted())
                 .addOnFailureListener(callback::onError);
+    }
+
+    public void deleteAllExpenses(DeleteExpenseCallback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            Log.w("FirebaseManager", "User not authenticated.");
+            callback.onError(new Exception("User not authenticated"));
+            return;
+        }
+
+        // Get reference to the expenses collection
+        db.collection("users")
+                .document(user.getUid())
+                .collection("expenses")
+                .document("transactions")
+                .collection("items")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Create a batch to delete all documents
+                    WriteBatch batch = db.batch();
+
+                    // Add each document to the batch for deletion
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        batch.delete(document.getReference());
+                    }
+
+                    // Commit the batch
+                    batch.commit()
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("FirebaseManager", "All expenses deleted successfully");
+                                callback.onExpenseDeleted();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("FirebaseManager", "Error deleting expenses: " + e.getMessage());
+                                callback.onError(e);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error getting expenses to delete: " + e.getMessage());
+                    callback.onError(e);
+                });
     }
 
     public interface UserProfileCallback {

@@ -34,6 +34,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:padding="24dp"
+            android:backgroundTint="#F9FAEE"
             android:background="@drawable/custom_edittext">
 
             <TextView
@@ -66,8 +67,8 @@
                 android:maxLength="6"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorHint"/>
+                android:textColor="@color/green"
+                android:textColorHint="@color/green"/>
 
             <Button
                 android:id="@+id/verify_button"

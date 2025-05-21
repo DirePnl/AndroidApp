@@ -37,6 +37,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:padding="24dp"
+            android:backgroundTint="#F9FAEE"
             android:background="@drawable/custom_edittext">
 
 
@@ -59,8 +60,8 @@
                 android:hint="Email"
                 android:drawableLeft="@drawable/baseline_person_24"
                 android:drawablePadding="8dp"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorHint">
+                android:textColor="@color/green"
+                android:textColorHint="@color/green">
             </EditText>
 
             <EditText
@@ -74,8 +75,8 @@
                 android:hint="Password"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorHint">
+                android:textColor="@color/green"
+                android:textColorHint="@color/green">
             </EditText>
             
             <Button

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/bg"
-    tools:context=".LoginActivity">
+    tools:context="com.example.Spendly.LoginActivity">
 
 
     <TextView
@@ -39,6 +39,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:padding="24dp"
+            android:backgroundTint="#F9FAEE"
             android:background="@drawable/custom_edittext">
 
 
@@ -59,11 +60,13 @@
                 android:layout_marginTop="40dp"
                 android:padding="8dp"
                 android:hint="Email"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorHint"
+
+                android:textColor="@color/green"
+                android:textColorHint="@color/green"
                 android:drawableLeft="@drawable/baseline_person_24"
                 android:drawablePadding="8dp">
             </EditText>
+
 
             <EditText
                 android:layout_width="match_parent"
@@ -74,8 +77,8 @@
                 android:layout_marginTop="40dp"
                 android:padding="8dp"
                 android:hint="Password"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorHint"
+                android:textColor="@color/green"
+                android:textColorHint="@color/green"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp">
             </EditText>
