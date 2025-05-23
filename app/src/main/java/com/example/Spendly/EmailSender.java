@@ -23,7 +23,15 @@ public class EmailSender {
             @Override
             public void run() {
                 final String fromEmail = "franzizleo21@gmail.com";
-                final String password = "mssi upja nwgj ojeh "; // Replace with your actual password
+                // TODO: Replace this with your Gmail App Password
+                // To get an App Password:
+                // 1. Go to your Google Account settings
+                // 2. Enable 2-Step Verification if not already enabled
+                // 3. Go to Security > App passwords
+                // 4. Select "Mail" and "Other (Custom name)"
+                // 5. Name it "Spendly App"
+                // 6. Copy the 16-character password and paste it here
+                final String password = "ewuz hzio rnjt ypbp"; // Replace with your actual app password
 
                 // Gmail SMTP
                 Properties properties = new Properties();
@@ -50,10 +58,21 @@ public class EmailSender {
 
                     // Send email
                     Transport.send(message);
-                    Log.d("EmailSender", "OTP Email sent successfully!");
+                    Log.d("EmailSender", "OTP Email sent successfully to: " + toEmail);
                 } catch (Exception e) {
-                    Log.e("EmailSender", "Failed to send OTP email: " + e.getMessage());
+                    Log.e("EmailSender", "Failed to send OTP email to " + toEmail + ": " + e.getMessage());
                     e.printStackTrace();
+                    // Add more specific error handling
+                    if (e.getMessage().contains("AuthenticationFailedException")) {
+                        Log.e("EmailSender", "Gmail authentication failed. Please check the app password.");
+                        Log.e("EmailSender", "Email: " + fromEmail);
+                        Log.e("EmailSender", "Password length: " + password.length());
+                        Log.e("EmailSender", "Password contains spaces: " + password.contains(" "));
+                    } else if (e.getMessage().contains("SendFailedException")) {
+                        Log.e("EmailSender", "Failed to send email. Please check the recipient email address.");
+                    } else if (e.getMessage().contains("SSLHandshakeException")) {
+                        Log.e("EmailSender", "SSL handshake failed. Please check your network connection.");
+                    }
                 }
             }
         });

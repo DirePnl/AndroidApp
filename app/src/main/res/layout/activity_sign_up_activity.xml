@@ -63,21 +63,6 @@
                 android:textColor="@color/green"
                 android:textColorHint="@color/green">
             </EditText>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/signup_password"
-                android:inputType="textPassword"
-                android:background="@drawable/custom_edittext"
-                android:layout_marginTop="40dp"
-                android:padding="8dp"
-                android:hint="Password"
-                android:drawableLeft="@drawable/baseline_lock_24"
-                android:drawablePadding="8dp"
-                android:textColor="@color/green"
-                android:textColorHint="@color/green">
-            </EditText>
             
             <Button
                 android:layout_width="match_parent"
