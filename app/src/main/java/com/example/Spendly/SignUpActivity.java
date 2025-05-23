@@ -2,7 +2,9 @@ package com.example.Spendly;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,11 +17,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
+
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
-    private EditText signupEmail, signupPassword;
+    private EditText signupEmail;
     private TextView loginRedirectText;
     private Button signupButton;
     private boolean isProcessing = false;
@@ -33,7 +37,6 @@ public class SignUpActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         signupEmail = findViewById(R.id.signup_email);
-        signupPassword = findViewById(R.id.signup_password);
         signupButton = findViewById(R.id.signup_button);
         loginRedirectText = findViewById(R.id.loginRedirectText);
 
@@ -43,45 +46,62 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             String user = signupEmail.getText().toString().trim();
-            String password = signupPassword.getText().toString().trim();
 
             if (user.isEmpty()) {
                 signupEmail.setError("Enter Email");
-            } else if (password.isEmpty()) {
-                signupPassword.setError("Enter Password");
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
+                signupEmail.setError("Enter a valid email address");
             } else {
                 isProcessing = true;
                 signupButton.setEnabled(false);
                 signupButton.setText("Checking...");
 
-                // First try to log in to verify if account exists
-                auth.signInWithEmailAndPassword(user, password)
-                        .addOnCompleteListener(loginTask -> {
-                            if (loginTask.isSuccessful()) {
-                                // User exists and can log in
-                                isProcessing = false;
-                                signupButton.setEnabled(true);
-                                signupButton.setText("Sign Up");
-                                Toast.makeText(SignUpActivity.this,
-                                        "An account with this email already exists. Please login instead.",
-                                        Toast.LENGTH_LONG).show();
-                                // Sign out since we only wanted to check
-                                auth.signOut();
-                                return;
-                            }
+                // Check if user exists before proceeding
+                auth.fetchSignInMethodsForEmail(user)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                List<String> signInMethods = task.getResult().getSignInMethods();
+                                if (signInMethods != null && !signInMethods.isEmpty()) {
+                                    // User exists
+                                    isProcessing = false;
+                                    signupButton.setEnabled(true);
+                                    signupButton.setText("Sign Up");
+                                    Toast.makeText(SignUpActivity.this,
+                                            "An account with this email already exists. Please login instead.",
+                                            Toast.LENGTH_LONG).show();
+                                    return;
+                                }
 
-                            // If login fails, check if it's because user doesn't exist
-                            if (loginTask.getException() instanceof FirebaseAuthInvalidUserException) {
-                                // User doesn't exist, proceed with normal checks
-                                Log.d("SignUp", "Login attempt failed - user doesn't exist, proceeding with checks");
-                                checkUserExistence(user, password);
+                                // User doesn't exist, proceed with OTP
+                                OTP.generateAndStoreOtp(user, firestore, new OTP.OnOtpGenerated() {
+                                    @Override
+                                    public void onGenerated(String otp) {
+                                        Log.d("SignUp", "OTP generated successfully");
+                                        EmailSender.sendEmail(user, otp);
+                                        Intent intent = new Intent(SignUpActivity.this, OTPActivity.class);
+                                        intent.putExtra("email", user);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailed(String error) {
+                                        Log.e("SignUp", "OTP generation failed: " + error);
+                                        isProcessing = false;
+                                        signupButton.setEnabled(true);
+                                        signupButton.setText("Sign Up");
+                                        Toast.makeText(SignUpActivity.this,
+                                                "Failed to generate OTP: " + error,
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             } else {
-                                // Some other error occurred
+                                // Error checking user existence
                                 isProcessing = false;
                                 signupButton.setEnabled(true);
                                 signupButton.setText("Sign Up");
                                 Toast.makeText(SignUpActivity.this,
-                                        "Error checking account: " + loginTask.getException().getMessage(),
+                                        "Error checking email: " + task.getException().getMessage(),
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
