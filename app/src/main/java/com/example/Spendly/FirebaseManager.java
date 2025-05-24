@@ -321,16 +321,27 @@ public class FirebaseManager {
             return;
         }
 
+        // Save profile using both UID and email for consistency
         db.collection("users")
-                .document(user.getEmail()) // Using email as document ID for easy lookup
+                .document(user.getUid())
                 .set(profile)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("FirebaseManager", "User profile saved successfully.");
-                    Toast.makeText(context, "Profile saved!", Toast.LENGTH_SHORT).show();
-                    loadUserProfile(callback); // Reload profile after saving
+                    // Also save to email-based document
+                    db.collection("users")
+                            .document(user.getEmail())
+                            .set(profile)
+                            .addOnSuccessListener(aVoid2 -> {
+                                Log.d("FirebaseManager", "User profile saved successfully.");
+                                Toast.makeText(context, "Profile saved!", Toast.LENGTH_SHORT).show();
+                                loadUserProfile(callback); // Reload profile after saving
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("FirebaseManager", "Error saving email-based profile: " + e.getMessage());
+                                callback.onError(e);
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("FirebaseManager", "Error saving user profile: " + e.getMessage());
+                    Log.e("FirebaseManager", "Error saving UID-based profile: " + e.getMessage());
                     Toast.makeText(context, "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     callback.onError(e);
                 });
@@ -344,8 +355,34 @@ public class FirebaseManager {
             return;
         }
 
+        // Try loading from UID-based document first
         db.collection("users")
-                .document(user.getEmail()) // Using email as document ID for easy lookup
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        UserProfile profile = documentSnapshot.toObject(UserProfile.class);
+                        if (profile != null) {
+                            callback.onProfileLoaded(profile);
+                        } else {
+                            // If UID-based document fails, try email-based document
+                            loadProfileFromEmail(user.getEmail(), callback);
+                        }
+                    } else {
+                        // If UID-based document doesn't exist, try email-based document
+                        loadProfileFromEmail(user.getEmail(), callback);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseManager", "Error loading UID-based profile: " + e.getMessage());
+                    // If UID-based load fails, try email-based document
+                    loadProfileFromEmail(user.getEmail(), callback);
+                });
+    }
+
+    private void loadProfileFromEmail(String email, UserProfileCallback callback) {
+        db.collection("users")
+                .document(email)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -360,7 +397,7 @@ public class FirebaseManager {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("FirebaseManager", "Error loading user profile: " + e.getMessage());
+                    Log.e("FirebaseManager", "Error loading email-based profile: " + e.getMessage());
                     callback.onError(e);
                 });
     }

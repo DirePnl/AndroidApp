@@ -1,76 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/custom_edittext"
+    android:backgroundTint="@color/lightgreen"
+    android:orientation="vertical"
+    android:padding="24dp">
 
-    <FrameLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#50000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/spendlymain"
+        android:gravity="center"
+        android:text="Delete Account"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/spendlymain"
+        android:gravity="center"
+        android:text="Warning: This action cannot be undone. All your data will be permanently deleted."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/del_email_Layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="Enter email"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/black"
+        app:cursorColor="@color/black"
+        app:hintTextColor="@color/black">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/del_email_Edittext"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="382dp"
-                android:layout_height="195dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="230dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="303dp"
-                android:elevation="@dimen/cardview_compat_inset_shadow"
-                android:background="@drawable/layer_bg"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/enterpassLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Enter password"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/black"
+        app:cursorColor="@color/black"
+        app:hintTextColor="@color/black">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="109dp"
-                    android:text="Are you sure you want to delete your account?"
-                    android:textSize="28sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/del_pass_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/proceed_delete_button"
-                    android:layout_width="104dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="260dp"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/black"
-                    android:text="Yes"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="VisualLintButtonSize" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/cancel_delete_button"
-                    android:layout_width="104dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="148dp"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/black"
-                    android:text="Cancel"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="VisualLintButtonSize" />
+        <Button
+            android:id="@+id/cancel_delete_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/darker_gray"
+            android:text="Cancel"
+            android:textColor="@android:color/white" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/proceed_delete_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/black"
+            android:text="Delete"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

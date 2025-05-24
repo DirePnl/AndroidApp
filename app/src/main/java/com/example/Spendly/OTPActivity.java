@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
@@ -178,28 +179,45 @@ public class OTPActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d("SignUp", "Account created successfully");
-                        // Create user document in Firestore
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("email", email);
-                        user.put("createdAt", new Date());
+                        FirebaseUser user = task.getResult().getUser();
+                        if (user != null) {
+                            // Create user document in Firestore using both UID and email
+                            Map<String, Object> userData = new HashMap<>();
+                            userData.put("email", email);
+                            userData.put("createdAt", new Date());
+                            userData.put("uid", user.getUid());
 
-                        firestore.collection("users")
-                                .document(email)
-                                .set(user)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("SignUp", "User document created");
-                                    Toast.makeText(OTPActivity.this,
-                                            "Account created successfully!",
-                                            Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(OTPActivity.this, MainActivity.class));
-                                    finish();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("SignUp", "Error creating user document", e);
-                                    Toast.makeText(OTPActivity.this,
-                                            "Error creating account: " + e.getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                });
+                            // Create document using UID
+                            firestore.collection("users")
+                                    .document(user.getUid())
+                                    .set(userData)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Also create a reference using email for easy lookup
+                                        firestore.collection("users")
+                                                .document(email)
+                                                .set(userData)
+                                                .addOnSuccessListener(aVoid2 -> {
+                                                    Log.d("SignUp", "User documents created");
+                                                    Toast.makeText(OTPActivity.this,
+                                                            "Account created successfully!",
+                                                            Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(OTPActivity.this, MainActivity.class));
+                                                    finish();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("SignUp", "Error creating email reference", e);
+                                                    Toast.makeText(OTPActivity.this,
+                                                            "Error creating account: " + e.getMessage(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                });
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("SignUp", "Error creating user document", e);
+                                        Toast.makeText(OTPActivity.this,
+                                                "Error creating account: " + e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    });
+                        }
                     } else {
                         Log.e("SignUp", "Error creating account", task.getException());
                         Toast.makeText(OTPActivity.this,
