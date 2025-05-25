@@ -8,9 +8,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/spendly_logo"
+        android:icon="@drawable/logo_spendly"
         android:label="@string/Spendly"
-        android:roundIcon="@drawable/spendly_logo"
+        android:roundIcon="@drawable/logo_spendly"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
